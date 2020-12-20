@@ -8,14 +8,13 @@
   Initial Longitude: <input type="text" name="lon0" id=lon0 ><br>
   Final Latitude: <input type="text" name="lat1" id=lat1 ><br>
   Final Longitude: <input type="text" name="lon1" id=lon1 ><br>
-  Initial Latitude: <input type="text" name="hdg" id=hdg ><br>
-  Initial Latitude: <input type="text" name="points" id=points ><br>
+  Heading: <input type="text" name="hdg" id=hdg ><br>
+  Num of Waypoints: <input type="text" name="points" id=points ><br>
 </form> 
 
-<p>Click "Try it" to display the value of each element in the form.</p>
-
-<button onclick="myFunction()">Try it</button><br>
-<button onclick="Ididthis()">Say Name</button>
+<p></p>
+<button onclick="myFunction()">List Below!</button>
+<button onclick="GetValues()">Go!</button>
 
 <p id="demo"></p>
 
@@ -29,8 +28,13 @@ function myFunction() {
   
   document.getElementById("demo").innerHTML = text;}
   
-function Ididthis() {
-  var x = document.getElementById("lat0").value;
+function GetValues() {
+  var lat0 = document.getElementById("lat0").value;
+  var lat1 = document.getElementById("lat1").value;
+  var lon0 = document.getElementById("lon0").value;
+  var lon1 = document.getElementById("lon1").value;
+  var heading = document.getElementById("hdg").value;
+  var points = document.getElementById("points").value;
   alert(x)}
   
 </script>
