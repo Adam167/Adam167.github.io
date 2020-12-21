@@ -17,6 +17,8 @@
 <button onclick="Arc()">Go!</button>
 
 <p id="demo"></p>
+  
+<textarea id="output" rows="20" cols="40" style="border:none;"></textarea>
 
 <script>
 function myFunction() {
@@ -156,6 +158,7 @@ class FlightPlan
   }
   PrintXml()
   {
+    document.getElementById("output").innerHTML = this.Fp.ToXML();}
     println(this.Fp.ToXML());
   }
 }
