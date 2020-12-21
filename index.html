@@ -157,8 +157,7 @@ class FlightPlan
     rt.AddChild(new Node("waypoint-type","USER WAYPOINT"));
   }
   PrintXml()
-  {
-    document.getElementById("output").innerHTML = this.Fp.ToXML();}
+    document.getElementById("output").innerHTML = this.Fp.ToXML();
     println(this.Fp.ToXML());
   }
 }
