@@ -1,23 +1,29 @@
+
+
 <HTML>
 <Body>
 
 
 <form id="frm1">
-  Initial Latitude:   <br> <input type="text" name="lat0" id=lat0 ><br>
-  Initial Longitude:  <br> <input type="text" name="lon0" id=lon0 ><br>
-  Final Latitude:     <br> <input type="text" name="lat1" id=lat1 ><br>
-  Final Longitude:    <br> <input type="text" name="lon1" id=lon1 ><br>
-  Heading:            <br> <input type="text" name="hdg" id=hdg ><br>
-  Num of Waypoints:   <br> <input type="text" name="points" id=points ><br>
+  Initial Latitude:   <br> <input type="text" name="lat0" id=lat0 value="39.2753"><br>
+  Initial Longitude:  <br> <input type="text" name="lon0" id=lon0 value="-120.1672"><br>
+  Final Latitude:     <br> <input type="text" name="lat1" id=lat1 value="39.1072"><br>
+  Final Longitude:    <br> <input type="text" name="lon1" id=lon1 value="-119.7703"><br>
+  Heading:            <br> <input type="text" name="hdg" id=hdg value="221"><br>
+  Num of Waypoints:   <br> <input type="text" name="points" id=points value="10"><br>
 </form> 
 
 <p></p>
 <button onclick="myFunction()">List Below!</button>
 <button onclick="Arc()">Go!</button>
 
+
 <p id="demo"></p>
 
 <script>
+
+
+
 function myFunction() {
   var x = document.getElementById("frm1");
   var text = "";
@@ -45,19 +51,30 @@ var lon0=-116.97;
 var lat1=32.68
 var lon1=-116.97;
 var heading=90;
+
 Reno
 TIPYO 39.2753/-120.1672
 SPOON 39.1072/-119.7703
+
 */
-var lat0= 39.2753;
-var lon0= -120.1672;
-var lat1=  39.1072;
-var lon1=  -119.7703;
-var heading= 221;
+//var lat0= 39.2753;
+//var lon0= -120.1672;
+//var lat1=  39.1072;
+//var lon1=  -119.7703;
+//var heading= 221;
+//var points=10;
 
-var output = "Hello World!"
-var newline = "/r/n"
 
+var lat0 = Number(document.getElementById("lat0").value);
+var lat1 = Number(document.getElementById("lat1").value);
+var lon0 = Number(document.getElementById("lon0").value);
+var lon1 = Number(document.getElementById("lon1").value);
+var heading = Number(document.getElementById("hdg").value);
+var points = Number(document.getElementById("points").value);
+
+//var nL = "\r\n"
+// alert(lat0 + nL + lat1 + nL + lon0 + nL + lon1 + nL + heading + nL + points)
+  
 const println = (msg) => {
   console.log(msg);
 }
@@ -153,11 +170,31 @@ class FlightPlan
   }
   PrintXml()
   {
+
     println(this.Fp.ToXML());
+    
+    function download(filename, text) {
+
+  var element = document.createElement('a');
+
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+
+  document.body.appendChild(element);
+  element.click();
+
+  document.body.removeChild(element);
+
+}
+
+// Start file download.
+
+download("hello.fpl",this.Fp.ToXML());
   }
 }
 
-var points=10;
 
 
 var lonscale = LonMultiplier((lat0+lat1)/2);
