@@ -3,45 +3,76 @@
 <HTML>
 <Body>
 
+<head>
+<style>
+
+fieldset.locinfo {
+width:275px;
+float: left;
+clear: left
+}
+
+fieldset.fileinfo {
+width:275px;
+float: left;
+}
+
+fieldset.page {
+float: left;
+}
+
+legend {
+font-size: 20px;
+font-weight: bold;
+}
+
+label {
+font-weight: bold;
+text-align: right;
+width: 140px;
+float: left;
+clear: left;
+}
+
+input.textbox-300 {
+width: 100px;
+float: left;
+text-align: right;
+font-size: 12;
+}
+
+fieldset p {
+clear: both;
+padding: 5px;
+}
+
+</style>
+</head>
+
+<fieldset class="page">
+<legend>Infinite Flight Arc Maker</legend>
 
 <form id="frm1">
-  Initial Latitude:   <br> <input type="text" name="lat0" id=lat0 value="39.2753"><br>
-  Initial Longitude:  <br> <input type="text" name="lon0" id=lon0 value="-120.1672"><br>
-  Final Latitude:     <br> <input type="text" name="lat1" id=lat1 value="39.1072"><br>
-  Final Longitude:    <br> <input type="text" name="lon1" id=lon1 value="-119.7703"><br>
-  Heading:            <br> <input type="text" name="hdg" id=hdg value="221"><br>
-  Num of Waypoints:   <br> <input type="text" name="points" id=points value="10"><br>
+<fieldset class="locinfo">
+ <legend>Location</legend>
+  <p><label for ="lat0">Initial Latitude:</label>		<input type="number" name="lat0" id=lat0 value="39.2753" class = "textbox-300"></p>
+  <p><label for ="lon0">Initial Longitude:</label>		<input type="number" name="lon0" id=lon0 value="-120.1672" class = "textbox-300"></p>
+  <p><label for ="lat1">Final Latitude:</label>			<input type="number" name="lat1" id=lat1 value="39.1072" class = "textbox-300"></p>
+  <p><label for ="lon1">Final Longitude:</label>		<input type="number" name="lon1" id=lon1 value="-119.7703" class = "textbox-300"></p>
+  <p><label for ="hdg">Heading: </label>				<input type="number" name="hdg"  id=hdg value="221" class = "textbox-300"></p>
+ </fieldset> 
+ <fieldset class="fileinfo">
+ <legend>File</legend>
+  <p><label for ="filename">Filename:</label>			<input type="text" name="filename" id=filename value="arcplan" class = "textbox-300"></p>
+  <p><label for ="points">Num of Waypoints:</label>		<input type="number" name="points" id=points value="10" class = "textbox-300"></p>
+ </fieldset>
 </form> 
 
-<p></p>
-<button onclick="myFunction()">List Below!</button>
-<button onclick="Arc()">Go!</button>
+<p class="centre"><button onclick="Arc()">Go!</button></p>
 
-
-<p id="demo"></p>
+</fieldset>
 
 <script>
-
-
-
-function myFunction() {
-  var x = document.getElementById("frm1");
-  var text = "";
-  var i;
-  for (i = 0; i < x.length ;i++) {
-    text += x.elements[i].value + "<br>";}
-  
-  document.getElementById("demo").innerHTML = text;}
-  
-function GetValues() {
-  var lat0 = document.getElementById("lat0").value;
-  var lat1 = document.getElementById("lat1").value;
-  var lon0 = document.getElementById("lon0").value;
-  var lon1 = document.getElementById("lon1").value;
-  var heading = document.getElementById("hdg").value;
-  var points = document.getElementById("points").value;
-  var nL = "\r\n"
-  alert(lat0 + nL + lat1 + nL + lon0 + nL + lon1 + nL + heading + nL + points)}
   
 function Arc() {
 /*
@@ -71,6 +102,9 @@ var lon0 = Number(document.getElementById("lon0").value);
 var lon1 = Number(document.getElementById("lon1").value);
 var heading = Number(document.getElementById("hdg").value);
 var points = Number(document.getElementById("points").value);
+var filename = document.getElementById("filename").value + ".fpl";
+
+points = points + 1
 
 //var nL = "\r\n"
 // alert(lat0 + nL + lat1 + nL + lon0 + nL + lon1 + nL + heading + nL + points)
@@ -191,7 +225,7 @@ class FlightPlan
 
 // Start file download.
 
-download("hello.fpl",this.Fp.ToXML());
+download(filename,this.Fp.ToXML());
   }
 }
 
@@ -461,8 +495,7 @@ function DistHeading(latfrom,lonfrom,latto,lonto)
 
 
 }
-  
-  
+    
 </script>
 
 </Body>
