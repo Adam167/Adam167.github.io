@@ -1,0 +1,520 @@
+<HTML>
+<Body>
+
+<head>
+<style>
+
+fieldset.locinfo {
+width:275px;
+float: left;
+clear: left
+}
+
+fieldset.fileinfo {
+width:275px;
+float: left;
+}
+
+fieldset.page {
+float: left;
+}
+
+legend {
+font-size: 20px;
+font-weight: bold;
+}
+
+label {
+font-weight: bold;
+text-align: right;
+width: 140px;
+float: left;
+clear: left;
+}
+
+input.textbox-300 {
+width: 100px;
+float: left;
+text-align: right;
+font-size: 12;
+}
+
+fieldset p {
+clear: both;
+padding: 5px;
+}
+
+</style>
+</head>
+
+<fieldset class="page">
+<legend>Infinite Flight Arc Maker</legend>
+
+<form id="frm1">
+<fieldset class="locinfo">
+ <legend>Location</legend>
+  <p><label for ="lat0">Initial Latitude:</label>		<input type="number" name="lat0" id=lat0 value="39.2753" class = "textbox-300"></p>
+  <p><label for ="lon0">Initial Longitude:</label>		<input type="number" name="lon0" id=lon0 value="-120.1672" class = "textbox-300"></p>
+  <p><label for ="lat1">Final Latitude:</label>			<input type="number" name="lat1" id=lat1 value="39.1072" class = "textbox-300"></p>
+  <p><label for ="lon1">Final Longitude:</label>		<input type="number" name="lon1" id=lon1 value="-119.7703" class = "textbox-300"></p>
+  <p><label for ="hdg">Magnetic Heading:</label>		<input type="number" name="hdg"  id=hdg value="221" class = "textbox-300"></p>
+  <p><label for ="mag">Magnetic Variation:</label>		<input type="number" name="mag"  id=mag value="0" class = "textbox-300"></p>
+ </fieldset> 
+ <fieldset class="fileinfo">
+ <legend>File</legend>
+  <p><label for ="filename">Filename:</label>			<input type="text" name="filename" id=filename value="arcplan" class = "textbox-300"></p>
+  <p><label for ="points">Num of Waypoints:</label>		<input type="number" name="points" id=points value="10" class = "textbox-300"></p>
+  <p><label for ="exit">Exit Heading (Mag):</label>			<input type="number" name="exit" id=exit  class = "textbox-300"></p>
+  <p><label for ="exitT">Exit Heading (True):</label>			<input type="number" name="exitT" id=exitT  class = "textbox-300"></p>
+ </fieldset>
+</form> 
+
+<p><button onclick="Arc()">Go!</button></p>
+
+</fieldset>
+
+<script>
+  
+function Arc() {
+/*
+KSAN
+var lat0=32.48;
+var lon0=-116.97;
+var lat1=32.68
+var lon1=-116.97;
+var heading=90;
+
+Reno
+TIPYO 39.2753/-120.1672
+SPOON 39.1072/-119.7703
+
+*/
+//var lat0= 39.2753;
+//var lon0= -120.1672;
+//var lat1=  39.1072;
+//var lon1=  -119.7703;
+//var heading= 221;
+//var points=10;
+
+
+var lat0 = Number(document.getElementById("lat0").value);
+var lat1 = Number(document.getElementById("lat1").value);
+var lon0 = Number(document.getElementById("lon0").value);
+var lon1 = Number(document.getElementById("lon1").value);
+var heading = Number(document.getElementById("hdg").value);
+var points = Number(document.getElementById("points").value);
+var filename = document.getElementById("filename").value + ".fpl";
+var magvar = Number(document.getElementById("mag").value)
+
+points = points + 1
+
+//var nL = "\r\n"
+// alert(lat0 + nL + lat1 + nL + lon0 + nL + lon1 + nL + heading + nL + points)
+  
+const println = (msg) => {
+  console.log(msg);
+}
+
+class Node
+{
+  constructor(name,value,attribute)
+  {
+    this.Name = name; 
+    this.Value = "";
+    if (typeof(value) != "undefined")
+      this.Value = value;
+    this.Attribute = "";
+    if (typeof(attribute)!="undefined")
+      this.Attribute=" "+attribute;
+    this.Children=[];
+    this.Indent="";
+    this.Version = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+  }
+  AddChild(child)
+  {
+    child.Version="";
+    child.Indent+=this.Indent+"  ";
+    this.Children.push(child);
+    return child;
+  }
+  Exists(name,value)
+  {
+    if (this.Name==name && this.Value==value)
+      return true;
+    var i=0;
+    while(i<this.Children.length)
+    {
+      if (this.Children[i].Exists(name,value))
+        return true;
+      i++;
+    }
+    return false;
+  }
+  ToXML()
+  {
+    //println("building "+this.Name)
+    var ret = this.Version;
+    ret += this.BuildElement();
+    var i=0;
+    while (i<this.Children.length)
+    {
+       ret += this.Children[i].ToXML();
+       i++;
+    }
+    if (this.Children.length!=0)
+      ret+=this.Indent+"</"+this.Name+">\n";
+    return ret;
+  }
+  BuildElement()
+  {
+    var el = this.Indent+"<"+this.Name+this.Attribute+">"+this.Value;
+    if (this.Children.length==0)
+      el += "</"+this.Name+">\n";
+    else
+      el += "\n";
+    return el;
+  }
+}
+
+
+class FlightPlan
+{
+  constructor(name)
+  {
+    this.Name=name;
+    this.Fp = new Node("flight-plan","", "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www8.garmin.com/xmlschemas/FlightPlan/v1\"");
+    this.WaypointTable = new Node("waypoint-table","");
+    this.RouteTable = new Node("route","");
+    this.Fp.AddChild(this.WaypointTable);
+    this.Fp.AddChild(this.RouteTable);
+  }
+  AddUserFix(id,lat,lon)
+  {
+    if (!this.WaypointTable.Exists("identifier",id))
+    {
+      var wp = new Node("waypoint","");
+      this.WaypointTable.AddChild(wp);
+      wp.AddChild(new Node("identifier",id));
+      wp.AddChild(new Node("type","USER WAYPOINT"));
+      wp.AddChild(new Node("lat",lat));
+      wp.AddChild(new Node("lon",lon));
+    }
+    var rt = new Node("route-point","");
+    this.RouteTable.AddChild(rt);
+    rt.AddChild(new Node("waypoint-identifier",id));
+    rt.AddChild(new Node("waypoint-type","USER WAYPOINT"));
+  }
+  PrintXml()
+  {
+
+    println(this.Fp.ToXML());
+    
+    function download(filename, text) {
+
+  var element = document.createElement('a');
+
+  element.setAttribute('href', 'data:fpl/plain;charset=utf-8,' + encodeURIComponent(text));
+
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+
+  document.body.appendChild(element);
+  element.click();
+
+  document.body.removeChild(element);
+
+}
+
+// Start file download.
+
+download(filename,this.Fp.ToXML());
+  }
+}
+
+
+
+var lonscale = LonMultiplier((lat0+lat1)/2);
+//println("LonMultiplier="+lonscale);
+var dx = (lon1-lon0)*lonscale;
+var dy = lat1-lat0;
+//println(dx + "," + dy);
+
+// find the distance and heading to the final fix
+dh = DistHeading(lat0,lon0,lat1,lon1);
+
+var headingToFinal=dh[1];
+var distToFinal=dh[0];
+
+
+// verify final fix with distance and heading from initial fix
+check = NewPoint(lat0,lon0,headingToFinal,distToFinal);
+//println("final from initial given heading and distance..");
+ToIF(check[0],check[1]);
+//println();
+
+// find the arc radius
+alpha = FixHeading(90 - Math.abs(heading - headingToFinal))%360;
+//println("alpha="+alpha)
+var arcR = Math.abs(dh[0]/(2*Math.cos(alpha*Math.PI/180)));
+//println("Arc Radius="+arcR)
+
+// find lat lon of arc center
+// first determine the direction
+var dir1=heading-90;
+var dir2=heading+90;
+var headingToCenter=dir2;
+var turnLeft=false;
+if (AngleBetween(headingToFinal,dir1)<AngleBetween(headingToFinal,dir2))
+{
+  headingToCenter=dir1;
+  turnLeft=true;
+  //println("turning left");
+}
+var arcCenterDec = NewPoint(lat0,lon0,headingToCenter,arcR);
+var initialArcHeading = FixHeading(headingToCenter-180);
+
+
+// find swept angle and setup increment
+var headingfixangle=AngleBetween(heading,headingToFinal);
+
+var arcAngle=2*(90-AngleBetween(initialArcHeading,headingToFinal+180));
+if (headingfixangle>90)
+{
+  //println("obtuse angle between heading & fix path")
+  arcAngle=2*(90+AngleBetween(initialArcHeading,headingToFinal+180));
+}
+else
+// *********************************** DO NOT DELETE **************************************
+  println("acute angle between heading & fix path")
+
+if (turnLeft=true) {
+ var exitheading = heading - arcAngle
+}
+else{
+var exitheading = heading + arcAngle
+}
+
+var exitheadingT = exitheading;
+exitheading = exitheading + magvar;
+exitheadingT - exitheading;
+
+if (exitheading >360) {exitheading = exitheading - 360};
+if (exitheading <0) {exitheading = exitheading + 360};
+
+if (exitheadingT >360) {exitheadingT = exitheadingT - 360};
+if (exitheadingT <0) {exitheadingT = exitheadingT + 360};
+
+exitheading = exitheading.toFixed(2);
+exitheadingT = exitheadingT.toFixed(2);
+
+document.getElementById("exit").value = exitheading;
+document.getElementById("exitT").value = exitheadingT;
+
+var deltaAngle = arcAngle/points;
+var initialArcangle = FixHeading(headingToCenter+180);
+
+var decPoints = [];
+if (turnLeft)
+{
+  var lastAngle = initialArcangle-arcAngle-deltaAngle+1;
+
+  for (h= initialArcangle;h>lastAngle;h-=deltaAngle)
+  {
+    var arcPoint = NewPoint(arcCenterDec[0],arcCenterDec[1],h,arcR);
+    decPoints.push(arcPoint);
+    ToIF(arcPoint[0],arcPoint[1]);
+   
+  }
+}
+else
+{
+  var lastAngle = initialArcangle +arcAngle+deltaAngle-1;
+  for (h= initialArcangle;h<lastAngle;h+=deltaAngle)
+  {
+    var arcPoint = NewPoint(arcCenterDec[0],arcCenterDec[1],h,arcR);
+    decPoints.push(arcPoint);
+    ToIF(arcPoint[0],arcPoint[1]);
+    //print(" ")
+  }
+}
+println();
+
+var fp = new FlightPlan("KSAN Circle");
+
+println("Decimal fixes...");
+for (index=0;index<decPoints.length;index++)
+{
+  var lat = decPoints[index][0].toFixed(4);
+  var lon = decPoints[index][1].toFixed(4);
+  //print(lat+"/"+lon+" ");
+  var id = (lat*1000).toFixed(0) +"/"+ (lon*1000).toFixed(0);
+  fp.AddUserFix(id,lat,lon);
+}
+println();
+println("XML Flightplan");
+fp.PrintXml();
+
+/////////////////////////////////////////////////////
+// returns the angle between two headings
+function AngleBetween(heading1,heading2)
+{
+  var h1=FixHeading(heading1);
+  var h2=FixHeading(heading2);
+  var delta=h1>h2?h1-h2:h2-h1;
+  if (delta>180)
+    delta=360-delta;
+  //println("heading1="+heading1+" heading2="+heading2);
+  //println("fxedheading1="+h1+" fixedheading2="+h2+" delta="+delta);
+  return delta;
+}
+
+// returns degrees minutes (DDDMM) given decimal degrees (DD.dd)
+function ToDegMin(num)
+{
+  var deg = Math.trunc(num);
+  var min = Math.round(60*(num-deg));
+  
+  if (Math.abs(min)==60)
+  {
+    min=0;
+    if (num < 0)
+    {
+      deg=deg-1;
+    }
+    else
+    {
+      deg=deg+1;
+    }
+  }
+  
+  /*
+  println("debug ToDegMin")
+  println("num="+num+" deg="+deg+" min="+min);
+  println("end debug")
+  */
+  return deg*100 + min;
+}
+
+// converts lat lon in decimal degrees to DDMM[N/S]/DDDMM[E/W] format IF uses and prints the result
+// lat is always entered as N (S is negative)
+// lon is entered as E (west is negative)
+function ToIF(latitude,longitude)
+{
+  if (latitude<0)
+  {
+    //print(ToDegMin(latitude*-1));
+    //print('S/');
+  }
+  else
+  {
+   // print(ToDegMin(latitude));
+   // print('N/');
+  }
+ 
+  if (longitude <0)
+  {
+   // print(ToDegMin(longitude*-1));
+   // print('W');
+  }
+  else
+  {
+   // print(ToDegMin(longitude));
+   // print('E');
+  }
+}
+
+// returns a longitude scaling factor for the given latitude. 
+function LonMultiplier(latitude)
+{
+  return 1/Math.sin((90-latitude)*Math.PI*2/360);
+}
+
+// small headings around 0 are returned as 0
+// headings larger than 360 are reduced to a value less than 360
+// negative headings are converted to a positive number
+function FixHeading(fixthis)
+{
+  var h = fixthis;
+  if (Math.abs(h) < .1) 
+    return 0;
+  if ((Math.abs(h) / 360) >= 1)
+    h = h % 360;
+  if (h < 0)
+  {
+    return 360 + h;
+  } 
+  return h;
+}
+
+// debug print “label:number “
+function MyPrint(label, number)
+{
+  //print(label);
+  //print(': ');
+  //print(number);
+}
+
+function MyPrintf(label, number, length, decimals)
+{
+  //print(label);
+  //print(': ');
+
+}
+
+// given latitude and longitude (decimal degrees) heading and leg length, returns lat lon at the end of the leg
+function NewPoint(latitude,longitude,heading,leglength)
+{
+  var lonScale = LonMultiplier(latitude);
+  //var scsle = lonScale;
+  var alpha = Math.PI * 2 * (90 - heading)/360;
+
+  var dx = lonScale * leglength * Math.cos(alpha);
+  var deltaLon = dx / 60;
+  var newLon = longitude + deltaLon;
+
+  var dy = leglength * Math.sin(alpha);
+  var deltaLat = dy / 60;
+  var newLat = latitude + deltaLat;
+  
+  /*
+  println();
+  println("NewPoint debug");
+  println("heading="+heading+" legLength="+leglength);
+  println("lat="+latitude+" lon="+longitude);
+  println("dlat="+deltaLat+" dlon="+deltaLon);
+  println("dy="+dy+" dx="+dx);
+  println("newLat="+newLat+" newLon="+newLon)
+  println("end debug");
+  */
+  return [newLat,newLon];
+}
+
+function DistHeading(latfrom,lonfrom,latto,lonto)
+{
+   var lonMult = LonMultiplier((latfrom+latto)/2);
+   var dy = (latto-latfrom)*60;
+   var dx = ((lonto-lonfrom) / lonMult)*60;
+
+   var dist = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+   if (dx==0)
+      dx = .000001;
+   var dyx=dy/dx;
+   var angleRadians = Math.atan(dyx);
+   var angleDegrees = angleRadians*180/Math.PI;
+   var heading = FixHeading(90-angleDegrees); 
+   if (dx<0)
+     heading = 270-angleDegrees;
+
+   //println("lonMult="+lonMult+" dx="+dx+" dy="+dy);
+   //println("dy="+dy+" dx="+dx+" angleRad="+ angleRadians+" angleDeg="+angleDegrees+" heading="+heading);
+
+   return[dist,heading];
+}
+
+
+}
+    
+</script>
+
+</Body>
+</HTML>
