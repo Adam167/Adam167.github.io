@@ -6,11 +6,7 @@
 
 * {box-sizing: border-box;}
 
-body { 
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-  
+
 .header {
   overflow: hidden;
   background-color: #f1f1f1;
@@ -62,16 +58,23 @@ body {
 fieldset.locinfo {
 width:300px;
 float: left;
-clear: left
 }
 
 fieldset.fileinfo {
 width:300px;
 float: left;
+clear: right;
+}
+
+fieldset.autofill {
+width:300px;
+float: left;
+clear: left;
 }
 
 fieldset.page {
 float: left;
+
 }
 
 legend {
@@ -85,6 +88,11 @@ text-align: right;
 width: 140px;
 float: left;
 clear: left;
+}
+
+label.fplinput {
+width: 250px;
+text-align: left;
 }
 
 input.textbox-300 {
@@ -114,6 +122,14 @@ padding: 5px;
 <fieldset class="page">
 <legend>Infinite Flight Arc Maker</legend>
 
+<fieldset class=autofill>
+<legend>Extract Co-ords</legend>
+<p><label class = "fplinput" >Paste waypoints from fpl file here</label></p>	
+<p><textarea  name="fplin" id=fplin rows="5" cols="30"></textarea></p>
+<p><button onclick="Autofill()">Extract Co-ords</button></p>
+</fieldset>
+
+
 <form id="frm1">
 <fieldset class="locinfo">
  <legend>Location</legend>
@@ -138,6 +154,23 @@ padding: 5px;
 </fieldset>
 
 <script>
+
+
+function Autofill() {
+var parser, xmlDoc;
+var text = "<a>" + document.getElementById("fplin").value + "</a>";
+
+parser = new DOMParser();
+xmlDoc = parser.parseFromString(text,"text/xml");
+
+wpt = xmlDoc.getElementsByTagName("waypoint")[0];
+	document.getElementById("lat0").value = wpt.getElementsByTagName("lat")[0].childNodes[0].nodeValue;
+	document.getElementById("lon0").value = wpt.getElementsByTagName("lon")[0].childNodes[0].nodeValue;
+	
+wpt = xmlDoc.getElementsByTagName("waypoint")[1];
+	document.getElementById("lat1").value = wpt.getElementsByTagName("lat")[0].childNodes[0].nodeValue;
+	document.getElementById("lon1").value = wpt.getElementsByTagName("lon")[0].childNodes[0].nodeValue;
+}
   
 function Arc() {
 /*
@@ -324,10 +357,10 @@ var arcR = Math.abs(dh[0]/(2*Math.cos(alpha*Math.PI/180)));
 
 // find lat lon of arc center
 // first determine the direction
-var dir1=heading-90;
-var dir2=heading+90;
-var headingToCenter=dir2;
-var turnLeft=false;
+var dir1 = Number(heading) - 90;
+var dir2 = Number(heading) + 90;
+var headingToCenter = dir2;
+var turnLeft = false;
 if (AngleBetween(headingToFinal,dir1)<AngleBetween(headingToFinal,dir2))
 {
   headingToCenter=dir1;
@@ -351,7 +384,7 @@ else
 // *********************************** DO NOT DELETE **************************************
   println("acute angle between heading & fix path")
 
-if (turnLeft=true) {
+if (turnLeft == true) {
  var exitheading = heading - arcAngle
 }
 else{
