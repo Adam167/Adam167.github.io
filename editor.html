@@ -1,0 +1,241 @@
+<html>
+<body>
+
+<head>
+<style>
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th,td {
+  padding: 5px;
+}
+</style>
+</head>
+
+<input type="file" id="fpl">
+<p><label for ="filename">Filename:</label>	<input type="text" name="filename" id=filename value="flightplan">
+<button onclick="exportfpl()">Download</button></p>
+<button onclick="edittable()">Test</button>
+<button onclick="savetable()">Test 2</button>
+<table id="fpltable"></table>
+
+
+<script>
+
+document.getElementById('fpl').addEventListener('change', readFileAsString)
+
+var n 
+
+function edittable(r){
+//var name = prompt("Please enter your name")
+//if (name = null){name = "Input your name next time"}
+//alert(name)
+var id = document.getElementById("fpltable").rows[r].cells[0].innerHTML
+var lat = document.getElementById("fpltable").rows[r].cells[1].innerHTML
+var lon = document.getElementById("fpltable").rows[r].cells[2].innerHTML
+var alt = document.getElementById("fpltable").rows[r].cells[3].innerHTML
+console.log(alt)
+console.log(r)
+document.getElementById("fpltable").rows[r].cells[0].innerHTML = "<input id = id" + r + " value =" + id+ ">";
+document.getElementById("fpltable").rows[r].cells[1].innerHTML = "<input id = lat" + r + " value =" + lat+ ">";
+document.getElementById("fpltable").rows[r].cells[2].innerHTML = "<input id = lon" + r + " value =" + lon+ ">";
+document.getElementById("fpltable").rows[r].cells[3].innerHTML = "<input id = alt" + r + " value =" + alt+ ">";
+document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= savetable(" + r +")>Save Row</button>";
+}
+
+function savetable(r){
+console.log(r)
+var id = document.getElementById("id"+ r).value;
+var lat = document.getElementById("lat"+ r).value;
+var lon = document.getElementById("lon"+ r).value;
+var alt = document.getElementById("alt"+ r).value;
+
+
+document.getElementById("fpltable").rows[r].cells[0].innerHTML = id;
+document.getElementById("fpltable").rows[r].cells[1].innerHTML = lat;
+document.getElementById("fpltable").rows[r].cells[2].innerHTML = lon;
+document.getElementById("fpltable").rows[r].cells[3].innerHTML = alt;
+document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= edittable(" + r +")>Edit Row</button>";
+}
+
+function readFileAsString() {
+    var files = this.files;
+    if (files.length === 0) {
+        console.log('No file is selected');
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(event) {
+        //console.log('File content:', event.target.result);
+        var n = event.target.result;
+        //console.log(n);
+        var parser, xmlDoc;
+var table = "<tr><th>Name</th><th>Lat</th><th>Lon</th><th>Elevation</th></tr>";
+parser = new DOMParser();
+xmlDoc = parser.parseFromString(n,"text/xml");
+
+//console.log(xmlDoc)
+x = xmlDoc.getElementsByTagName("waypoint").length;
+//console.log(x)
+i = 0
+for(i = 0; i < x; i++){
+wpt = xmlDoc.getElementsByTagName("waypoint")[i];
+id = wpt.getElementsByTagName("identifier")[0].childNodes[0].nodeValue;
+lat = Number(wpt.getElementsByTagName("lat")[0].childNodes[0].nodeValue);
+lon = Number(wpt.getElementsByTagName("lon")[0].childNodes[0].nodeValue);
+try{alt = Number(wpt.getElementsByTagName("elevation")[0].childNodes[0].nodeValue);
+alt = alt.toFixed(0);
+}
+catch(err){ alt = ""}
+lat = lat.toFixed(7);
+lon = lon.toFixed(7);
+var r = i + 1
+table += "<tr><td>" + id + "</td><td>" + lat + "</td><td>" + lon + "</td><td>" + alt + "</td><td><button onclick= edittable(" + r +")>Edit Row</button></td></tr>"
+}
+
+document.getElementById("fpltable").innerHTML = table
+};
+   reader.readAsText(files[0]);
+}
+
+function exportfpl(){
+
+var fp = new FlightPlan("KSAN Circle");
+var Wpts = document.getElementById("fpltable").rows.length
+console.log(Wpts)
+var x = document.getElementById("fpltable")
+console.log(x.rows[1].cells[1].innerHTML)
+
+var i = 1
+
+for (i = 1; i < Wpts; i++){
+var id = x.rows[i].cells[0].innerHTML
+var lat = x.rows[i].cells[1].innerHTML
+var lon = x.rows[i].cells[2].innerHTML
+var alt = x.rows[i].cells[3].innerHTML
+fp.AddUserFix(id,lat,lon,alt);
+}
+fp.PrintXml();
+}
+
+//XML stuff
+class Node
+{
+  constructor(name,value,attribute)
+  {
+    this.Name = name; 
+    this.Value = "";
+    if (typeof(value) != "undefined")
+      this.Value = value;
+    this.Attribute = "";
+    if (typeof(attribute)!="undefined")
+      this.Attribute=" "+attribute;
+    this.Children=[];
+    this.Indent="";
+    this.Version = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+  }
+  AddChild(child)
+  {
+    child.Version="";
+    child.Indent+=this.Indent+"  ";
+    this.Children.push(child);
+    return child;
+  }
+  Exists(name,value)
+  {
+    if (this.Name==name && this.Value==value)
+      return true;
+    var i=0;
+    while(i<this.Children.length)
+    {
+      if (this.Children[i].Exists(name,value))
+        return true;
+      i++;
+    }
+    return false;
+  }
+  ToXML()
+  {
+    //println("building "+this.Name)
+    var ret = this.Version;
+    ret += this.BuildElement();
+    var i=0;
+    while (i<this.Children.length)
+    {
+       ret += this.Children[i].ToXML();
+       i++;
+    }
+    if (this.Children.length!=0)
+      ret+=this.Indent+"</"+this.Name+">\n";
+    return ret;
+  }
+  BuildElement()
+  {
+    var el = this.Indent+"<"+this.Name+this.Attribute+">"+this.Value;
+    if (this.Children.length==0)
+      el += "</"+this.Name+">\n";
+    else
+      el += "\n";
+    return el;
+  }
+}
+
+class FlightPlan
+{
+  constructor(name)
+  {
+    this.Name=name;
+    this.Fp = new Node("flight-plan","", "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www8.garmin.com/xmlschemas/FlightPlan/v1\"");
+    this.WaypointTable = new Node("waypoint-table","");
+    this.RouteTable = new Node("route","");
+    this.Fp.AddChild(this.WaypointTable);
+    this.Fp.AddChild(this.RouteTable);
+  }
+  AddUserFix(id,lat,lon,alt)
+  {
+    if (!this.WaypointTable.Exists("identifier",id))
+    {
+      var wp = new Node("waypoint","");
+      this.WaypointTable.AddChild(wp);
+      wp.AddChild(new Node("identifier",id));
+      wp.AddChild(new Node("type","USER WAYPOINT"));
+      wp.AddChild(new Node("lat",lat));
+      wp.AddChild(new Node("lon",lon));
+      if (alt === ""){} else {wp.AddChild(new Node("elevation",alt));
+      }
+    }
+    var rt = new Node("route-point","");
+    this.RouteTable.AddChild(rt);
+    rt.AddChild(new Node("waypoint-identifier",id));
+    rt.AddChild(new Node("waypoint-type","USER WAYPOINT"));
+  }
+  PrintXml()
+  {
+var fplname = document.getElementById("filename").value + ".fpl";
+    //console.log(this.Fp.ToXML());
+    
+    function download(filename, text) {
+
+  var element = document.createElement('a');
+
+  element.setAttribute('href', 'data:fpl/plain;charset=utf-8,' + encodeURIComponent(text));
+
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+
+  document.body.appendChild(element);
+  element.click();
+
+  document.body.removeChild(element);
+
+}
+// Start file download.
+download(fplname,this.Fp.ToXML());
+}
+}
+</script>
+</body>
+</html>
