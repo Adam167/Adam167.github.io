@@ -85,6 +85,7 @@ id = wpt.getElementsByTagName("identifier")[0].childNodes[0].nodeValue;
 lat = Number(wpt.getElementsByTagName("lat")[0].childNodes[0].nodeValue);
 lon = Number(wpt.getElementsByTagName("lon")[0].childNodes[0].nodeValue);
 try{alt = Number(wpt.getElementsByTagName("elevation")[0].childNodes[0].nodeValue);
+alt = alt*3.28084
 alt = alt.toFixed(0);
 }
 catch(err){ alt = ""}
@@ -202,7 +203,10 @@ class FlightPlan
       wp.AddChild(new Node("type","USER WAYPOINT"));
       wp.AddChild(new Node("lat",lat));
       wp.AddChild(new Node("lon",lon));
-      if (alt === ""){} else {wp.AddChild(new Node("elevation",alt));
+      if (alt === ""){} else {
+      alt = alt*0.3048
+      alt = alt.toFixed(0);
+      wp.AddChild(new Node("elevation",alt));
       }
     }
     var rt = new Node("route-point","");
