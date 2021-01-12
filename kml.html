@@ -63,7 +63,7 @@ body {
 <div class="header">
   <a href="#default" class="logo">FPL Tools</a>
   <div class="header-right">
-    <a class="active" href="index.html">Home</a>
+    <a class="index.html" href="#home">Home</a>
     <a href="arc">Arc Maker</a>
     <a href="kml">KML to FPL</a>
   </div>
@@ -71,16 +71,38 @@ body {
 
 <div style="padding-left:20px">
   <h1>KML to FPL file Converter</h1>
-  <p>Input KML Co-ords Below!</p>
+ 
+  
+   <p><label for ="filename">Pick a Filename:</label>	<input type="text" name="filename" id=filename value="flightplan" </p>
+  <p> Then upload you KML file here</p>
+  <input type="file" id="kmlfile">
+  <p> Or paste KML Co-ords Below and hit Go!</p>
   <textarea id="input" rows="10" cols="80"></textarea>
-   <p><label for ="filename">Filename:</label>	<input type="text" name="filename" id=filename value="flightplan" </p>
   <p><button onclick="kml()">Go!</button></p>
 </div>
 <script>
 
-function kml(){
+
+document.getElementById("kmlfile").addEventListener('change', readFileAsString)
+
+function readFileAsString() {
+    var files = this.files;
+    if (files.length === 0) {
+        console.log('No file is selected');
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(event) {
+        //console.log('File content:', event.target.result);
+        var n = event.target.result;
+        //console.log(n);
+        var parser, xmlDoc;
+parser = new DOMParser();
+xmlDoc = parser.parseFromString(n,"text/xml");
+str = xmlDoc.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue;
+console.log(str)
 var fp = new FlightPlan("KSAN Circle");
-var str = document.getElementById("input").value;
 var str_array = str.split(" ");
 
 for(var i = 0; i < str_array.length; i++) {
@@ -94,13 +116,51 @@ var elv
   var waypoint_array = waypoint.split(",") 
  
    for(var x = 0; x < 3; x++) {
-   if (x < 1) {lon = waypoint_array[x]}
-   if (x = 1) {lat = waypoint_array[x]}
-   if (x = 2) {elv = waypoint_array[x]}
+   if (x == 0) {lon = waypoint_array[x]}
+   if (x == 1) {lat = waypoint_array[x]}
+   if (x == 2) {elv = waypoint_array[x]}
   }  
 //alert ("lat=" + lat + " lon=" + lon + " elevation=" + elv)
+if (lat != null){
+if (lon != null){
 id = "Fix"+i
 fp.AddUserFix(id,lat,lon);
+} 
+}
+}
+fp.PrintXml();
+}
+   reader.readAsText(files[0]);
+}
+
+function kml(){
+var fp = new FlightPlan("KSAN Circle");
+var str = document.getElementById("input").value;
+console.log(str)
+var str_array = str.split(" ");
+
+for(var i = 0; i < str_array.length; i++) {
+   waypoint = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+//alert(waypoint);
+ 
+var lat
+var lon 
+var elv 
+  
+  var waypoint_array = waypoint.split(",") 
+ 
+   for(var x = 0; x < 3; x++) {
+   if (x == 0) {lon = waypoint_array[x]}
+   if (x == 1) {lat = waypoint_array[x]}
+   if (x == 2) {elv = waypoint_array[x]}
+  }  
+//alert ("lat=" + lat + " lon=" + lon + " elevation=" + elv)
+if (lat != null){
+if (lon != null){
+id = "Fix"+i
+fp.AddUserFix(id,lat,lon);
+} 
+}
 }
 fp.PrintXml();
 }
