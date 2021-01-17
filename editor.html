@@ -2,6 +2,7 @@
 <body>
 
 <head>
+<script src="https://kit.fontawesome.com/7c393fec46.js" crossorigin="anonymous"></script>
 <style>
 
 table, th, td {
@@ -11,12 +12,266 @@ table, th, td {
 th,td {
   padding: 5px;
 }
+
+#fpltable {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+}
+
+#fpltable td, #fpltable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#fpltable tr:nth-child(even){background-color: #f2f2f2;}
+
+#fpltable tr:hover {background-color: #ddd;}
+
+#fpltable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=number] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+#lat {
+  width: 49%;
+  padding: 10px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  float: left;
+  clear: left;
+  font-size: 14;
+  }
+  
+#lon {
+  width: 49%;
+  padding: 10px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  float: right;
+  clear: right;
+  font-size: 14;
+  }
+  
+#lonl {
+  width: 49%;
+  float: right;
+  clear: right;
+  text-align: left;
+  }
+
+#latl {
+  width: 49%;
+  float: left;
+  clear: left;
+  text-align: left;
+  }
+  
+#id {
+  width: 49%;
+  padding: 10px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  float: left;
+  clear: left;
+  font-size: 14;
+  }
+  
+#alt {
+  width: 49%;
+  padding: 10px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  float: right;
+  clear: right;
+  font-size: 14;
+  }
+  
+#altl {
+  width: 49%;
+  float: right;
+  clear: right;
+  text-align: left;
+  }
+
+#idl {
+  width: 49%;
+  float: left;
+  clear: left;
+  text-align: left;
+  }
+  
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+.closebtn {
+/*background-color: red;*/
+  color: red;
+  float: right;
+  padding: 5px;
+  border: none;
+  cursor: pointer;
+  /*margin-bottom:10px;*/
+  opacity: 0.8;
+  /*width: 25px;
+  height: 25px;*/
+  font-size: 30px;
+}
+.closebtn:hover {
+opacity: 1;
+}
+
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+
+.grid-container {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto;
+  grid-column-gap: 6px;
+}
+
+.grid-container > div {
+  width: 96px;
+  height: 25px;
+}
+
+.gridarc {
+grid-column-start: 2;
+grid-row: 1 / span 3
+}
+
+.btngrid {
+	background-color: orange;
+  color: black;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  width: 100%;
+  height: 100%;
+  font-size: 25px;
+  padding: 1px 0;
+}
+
+.btnarcgrid {
+	background-color: orange;
+  color: black;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  font-size: 20px;
+  padding: 1px 0;
+  height: 75px;
+}
+  
+.btngrid:hover, .btnarcgrid:hover {
+opacity: 1;
+}
+
+.labelgrid {
+	background-color: orange;
+  color: black;
+  border: none;
+  opacity: 0.8;
+  text-align: center;
+  line-height: 25px;
+}
+
+/*<button type="button" class="btnleft" onclick = "moveUp()"><i class="fas fa-angle-up"></i></button>>*/
 </style>
 </head>
 
 <input type="file" id="fpl">
 <p><label for ="filename">Filename:</label>	<input type="text" name="filename" id=filename value="flightplan">
 <button onclick="exportfpl()">Download</button></p>
+<button onclick="openForm()">Open editor</button>
+<div class="form-popup" id="WptForm">
+  <form class="form-container">
+  <span class="closebtn"><i class="fas fa-window-close" onclick="closeForm()"></i></span>
+    <h1 id="wptnum">Waypoint # N/A</h1>
+	
+    <label id ="idl" for="id"><b>ID</b></label>
+    <label id ="altl" for="alt"><b>Altitude</b></label><br>
+	
+	<input type="text" name="id" id="id">
+    <input type="number" name="alt" id="alt">
+
+    <label id ="latl" for="lat"><b>Latitude</b></label>
+    <label id ="lonl"  for="lon"><b>Longitude</b></label><br>
+    
+    <input  type="number" name="lat" id="lat">
+    <input  type="number" name="lon" id="lon">
+    
+    
+    
+    <div class="grid-container">
+    	<div><button type="button" class="btngrid" onclick = "moveUp()"><i class="fas fa-angle-up"></i></button></div>
+    	<div class = "gridarc"><button type="button" class="btnarcgrid" onclick = "Arc()">Arc to next</button></div>
+        <div><button type="button" class="btngrid" onclick = "Createabove()"><i class="fas fa-angle-up"></i></button></div>
+    	<div class="labelgrid">Move</div>
+    	<div class="labelgrid">Insert</div>
+   		<div><button type="button" class="btngrid" onclick = "moveDown()"><i class="fas fa-angle-down"></i></button></div>
+    	<div><button type="button" class="btngrid" onclick = "Createbelow()"><i class="fas fa-angle-down"></i></button></div>
+     </div>
+  
+    
+   	<button type="button" class="btn" onclick = "savetable()">Save</button>
+    <button type="button" class="btn cancel" onclick="Deleterow()">Delete</button>
+        
+  </form>
+</div>
+
+
+
 <table id="fpltable"></table>
 
 
@@ -26,36 +281,193 @@ document.getElementById('fpl').addEventListener('change', readFileAsString)
 
 var n 
 
-function edittable(r){
-//var name = prompt("Please enter your name")
-//if (name = null){name = "Input your name next time"}
-//alert(name)
+function Arc(){
+alert("Coming Soon!")
+}
+
+function openForm() {
+  document.getElementById("WptForm").style.display = "block";
+}
+
+function closeForm() {
+  document.getElementById("WptForm").style.display = "none";
+}
+
+function updatetable(){
+var trows = document.getElementById("fpltable").rows.length
+
+r = 1
+for (r = 1; r < trows; r++){
+
+document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= showEditor(" + r +")>Edit</button>";
+}
+}
+
+function showEditor(r){
 var id = document.getElementById("fpltable").rows[r].cells[0].innerHTML
 var lat = document.getElementById("fpltable").rows[r].cells[1].innerHTML
 var lon = document.getElementById("fpltable").rows[r].cells[2].innerHTML
 var alt = document.getElementById("fpltable").rows[r].cells[3].innerHTML
-console.log(alt)
-console.log(r)
+document.getElementById("wptnum").innerHTML = "Waypoint #" + r
+document.getElementById("id").value = id
+document.getElementById("alt").value = alt
+document.getElementById("lat").value = lat
+document.getElementById("lon").value = lon
+openForm()
+}
+
+function edittable(r){
+var id = document.getElementById("fpltable").rows[r].cells[0].innerHTML
+var lat = document.getElementById("fpltable").rows[r].cells[1].innerHTML
+var lon = document.getElementById("fpltable").rows[r].cells[2].innerHTML
+var alt = document.getElementById("fpltable").rows[r].cells[3].innerHTML
 document.getElementById("fpltable").rows[r].cells[0].innerHTML = "<input id = id" + r + " value =" + id+ ">";
 document.getElementById("fpltable").rows[r].cells[1].innerHTML = "<input id = lat" + r + " value =" + lat+ ">";
 document.getElementById("fpltable").rows[r].cells[2].innerHTML = "<input id = lon" + r + " value =" + lon+ ">";
 document.getElementById("fpltable").rows[r].cells[3].innerHTML = "<input id = alt" + r + " value =" + alt+ ">";
-document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= savetable(" + r +")>Save Row</button>";
+document.getElementById("fpltable").rows[r].cells[4].innerHTML = 
+"<button onclick= savetable(" + r +")>Move Up</button>"+ "<button onclick= Createabove(" + r +")>Insert Above</button>" +"<br>"
++ "<button onclick= savetable(" + r +")>Save Row</button>" + "<button onclick= Deleterow(" + r +")>Delete Row</button>" + "<br>"
++ "<button onclick= savetable(" + r +")>Move Down</button>" + "<button onclick= Createbelow(" + r +")>Insert Below</button>";
+
+
 }
 
-function savetable(r){
-console.log(r)
-var id = document.getElementById("id"+ r).value;
-var lat = document.getElementById("lat"+ r).value;
-var lon = document.getElementById("lon"+ r).value;
-var alt = document.getElementById("alt"+ r).value;
+function savetable(){
 
+var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
+var r = o[0];
+console.log(r);
+
+var id = document.getElementById("id").value;
+var lat = document.getElementById("lat").value;
+var lon = document.getElementById("lon").value;
+var alt = document.getElementById("alt").value;
 
 document.getElementById("fpltable").rows[r].cells[0].innerHTML = id;
 document.getElementById("fpltable").rows[r].cells[1].innerHTML = lat;
 document.getElementById("fpltable").rows[r].cells[2].innerHTML = lon;
 document.getElementById("fpltable").rows[r].cells[3].innerHTML = alt;
-document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= edittable(" + r +")>Edit Row</button>";
+document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+closeForm()
+}
+
+function moveUp() {
+
+var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
+var r = Number(o[0])
+console.log(r)
+if (r > 1) {
+r = r - 1
+var id = document.getElementById("id").value;
+var lat = document.getElementById("lat").value;
+var lon = document.getElementById("lon").value;
+var alt = document.getElementById("alt").value;
+
+  var table = document.getElementById("fpltable");
+  var row = table.insertRow(r);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  cell1.innerHTML = id
+  cell2.innerHTML = lat
+  cell3.innerHTML = lon
+  cell4.innerHTML = alt
+  cell5.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+document.getElementById("fpltable").deleteRow(r + 2)
+updatetable()
+showEditor(r)
+}
+else{alert("You've reached the top, congratulations!")}
+}
+
+function moveDown() {
+
+var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
+var r = Number(o[0])
+var trows = document.getElementById("fpltable").rows.length
+trows = trows - 1
+console.log(trows)
+console.log(r)
+if (r < trows) {
+r = r + 2
+var id = document.getElementById("id").value;
+var lat = document.getElementById("lat").value;
+var lon = document.getElementById("lon").value;
+var alt = document.getElementById("alt").value;
+
+  var table = document.getElementById("fpltable");
+  var row = table.insertRow(r);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  cell1.innerHTML = id
+  cell2.innerHTML = lat
+  cell3.innerHTML = lon
+  cell4.innerHTML = alt
+  cell5.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+document.getElementById("fpltable").deleteRow(r - 2)
+updatetable()
+r = r - 1
+showEditor(r)
+}
+else{alert("You've reached the bottom, congratulations!")}
+}
+
+function Createabove(r) {
+var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
+var r = Number(o[0])
+
+
+  var table = document.getElementById("fpltable");
+  var row = table.insertRow(r);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  cell1.innerHTML = ""
+  cell2.innerHTML = ""
+  cell3.innerHTML = ""
+  cell4.innerHTML = ""
+  cell5.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+updatetable()
+showEditor(r)
+}
+
+function Createbelow(r) {
+var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
+var r = Number(o[0])
+r = r + 1
+//console.log(r)
+
+
+  var table = document.getElementById("fpltable");
+  var row = table.insertRow(r);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  cell1.innerHTML = ""
+  cell2.innerHTML = ""
+  cell3.innerHTML = ""
+  cell4.innerHTML = ""
+  cell5.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+updatetable()
+showEditor(r)
+}
+
+function Deleterow(r) {
+var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
+var r = o[0]
+  document.getElementById("fpltable").deleteRow(r);
+  updatetable()
+  showEditor(r)
 }
 
 function readFileAsString() {
@@ -71,7 +483,7 @@ function readFileAsString() {
         var n = event.target.result;
         //console.log(n);
         var parser, xmlDoc;
-var table = "<tr><th>Name</th><th>Lat</th><th>Lon</th><th>Elevation</th></tr>";
+var table = "<tr><th>Name</th><th>Latitude</th><th>Longitude</th><th>Altitude</th><th></th></tr>";
 parser = new DOMParser();
 xmlDoc = parser.parseFromString(n,"text/xml");
 
@@ -92,7 +504,16 @@ catch(err){ alt = ""}
 lat = lat.toFixed(7);
 lon = lon.toFixed(7);
 var r = i + 1
-table += "<tr><td>" + id + "</td><td>" + lat + "</td><td>" + lon + "</td><td>" + alt + "</td><td><button onclick= edittable(" + r +")>Edit Row</button></td></tr>"
+table += "<tr><td>" 
++ id 
++ "</td><td>" 
++ lat 
++ "</td><td>" 
++ lon 
++ "</td><td>" 
++ alt 
++ "</td><td><button onclick= showEditor(" + r +")>Edit</button>"
++ "</td></tr>"
 }
 
 document.getElementById("fpltable").innerHTML = table
@@ -104,9 +525,9 @@ function exportfpl(){
 
 var fp = new FlightPlan("KSAN Circle");
 var Wpts = document.getElementById("fpltable").rows.length
-console.log(Wpts)
+//console.log(Wpts)
 var x = document.getElementById("fpltable")
-console.log(x.rows[1].cells[1].innerHTML)
+//console.log(x.rows[1].cells[1].innerHTML)
 
 var i = 1
 
