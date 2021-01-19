@@ -116,6 +116,7 @@ padding: 5px;
     <a class="active" href="index.html">Home</a>
     <a href="arc">Arc Maker</a>
     <a href="kml">KML to FPL</a>
+    <a href="editor">FPL Editor</a>
   </div>
 </div>
 
@@ -439,7 +440,7 @@ println();
 var fp = new FlightPlan("KSAN Circle");
 
 println("Decimal fixes...");
-for (index=0;index<decPoints.length;index++)
+for (index=1;index<decPoints.length - 1;index++)
 {
   var lat = decPoints[index][0].toFixed(4);
   var lon = decPoints[index][1].toFixed(4);
