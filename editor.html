@@ -519,7 +519,8 @@ document.getElementById('exittick').checked = false;
 function openArc(){
 var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
 var r = Number(o[0]);
-var trows = document.getElementById("fpltable").rows.length
+var trows = Number(document.getElementById("fpltable").rows.length)
+trows = trows - 1
 if (r == trows) {alert("Can't add arc to last waypoint")}
 else{
 if (r == 1){alert("First Waypoint, can't autofill entry heading")}
