@@ -430,7 +430,7 @@ opacity: 1;
 <input type="file" id="fpl">
 <p><label for ="filename">Filename:</label>	<input type="text" name="filename" id=filename value="flightplan">
 <button onclick="exportfpl()">Download</button></p>
-
+<button onclick="getlatlon()">Get LatLon from PMDG</button>
 <div class="form-popup" id="WptForm">
   <form class="form-container">
   <span class="closebtn"><i class="fas fa-window-close" onclick="closeForm()"></i></span>
@@ -507,6 +507,54 @@ const println = (msg) => {
 document.getElementById('fpl').addEventListener('change', readFileAsString)
 
 var n 
+
+function getlatlon(){
+var input = prompt("Enter fix data","");
+var inputarray = input.split(" ");
+id = inputarray[1];
+var latD = Number(inputarray[5])/60;
+if(inputarray[3]== "S"){
+var lat = "-";
+lat += inputarray[4];
+lat = Number(lat) - Number(latD)
+}
+else{
+var lat = "";
+lat += inputarray[4];
+lat = Number(lat) + Number(latD)
+}
+lat = lat.toFixed(7)
+
+
+if(inputarray[6]== "W"){var lon = "-"}
+else{var lon = ""}
+lon += inputarray[7]
+var lonD = (Number(inputarray[8])/60)
+lonD = Number(lonD).toFixed(0)
+lon += "."
+lon += lonD
+
+var lonD = Number(inputarray[8])/60;
+if(inputarray[6]== "W"){
+var lon = "-";
+lon += inputarray[7];
+lon = Number(lon) - Number(lonD)
+}
+else{
+var lon = "";
+lon += inputarray[7];
+lon = Number(lon) + Number(lonD)
+}
+lon = lon.toFixed(7)
+
+console.log(id)
+console.log(lat)
+console.log(lon)
+
+document.getElementById("id").value = id
+document.getElementById("lat").value = lat
+document.getElementById("lon").value = lon
+}
 
 function checkforexit(){
 if (document.getElementById('exittick').checked == true){
@@ -708,7 +756,7 @@ var trows = document.getElementById("fpltable").rows.length
 r = 1
 for (r = 1; r < trows; r++){
 
-document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= showEditor(" + r +")>Edit</button>";
+document.getElementById("fpltable").rows[r].cells[5].innerHTML = "<button onclick= showEditor(" + r +")>Edit</button>";
 }
 }
 
@@ -731,16 +779,29 @@ var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/);
 var r = o[0];
 //console.log(r);
 
+var tid = document.getElementById("fpltable").rows[r].cells[0].innerHTML
+var tlat = document.getElementById("fpltable").rows[r].cells[1].innerHTML
+var tlon = document.getElementById("fpltable").rows[r].cells[2].innerHTML
+var type = document.getElementById("fpltable").rows[r].cells[4].innerHTML
+
 var id = document.getElementById("id").value;
 var lat = document.getElementById("lat").value;
 var lon = document.getElementById("lon").value;
 var alt = document.getElementById("alt").value;
 
+var changed = false
+
+if (tid != id){changed = true}
+if (tlat != lat){changed = true}
+if (tlon != lon){changed = true}
+if (changed == true){type = "USER"}
+
 document.getElementById("fpltable").rows[r].cells[0].innerHTML = id;
 document.getElementById("fpltable").rows[r].cells[1].innerHTML = lat;
 document.getElementById("fpltable").rows[r].cells[2].innerHTML = lon;
 document.getElementById("fpltable").rows[r].cells[3].innerHTML = alt;
-document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= showEditor(" + r +")>Edit</button>";
+document.getElementById("fpltable").rows[r].cells[4].innerHTML = type;
+document.getElementById("fpltable").rows[r].cells[5].innerHTML = "<button onclick= showEditor(" + r +")>Edit</button>";
 closeForm()
 }
 
@@ -750,11 +811,14 @@ var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/);
 var r = Number(o[0])
 console.log(r)
 if (r > 1) {
-r = r - 1
+
 var id = document.getElementById("id").value;
 var lat = document.getElementById("lat").value;
 var lon = document.getElementById("lon").value;
 var alt = document.getElementById("alt").value;
+var type = document.getElementById("fpltable").rows[r].cells[4].innerHTML
+
+r = r - 1
 
   var table = document.getElementById("fpltable");
   var row = table.insertRow(r);
@@ -763,11 +827,13 @@ var alt = document.getElementById("alt").value;
   var cell3 = row.insertCell(2);
   var cell4 = row.insertCell(3);
   var cell5 = row.insertCell(4);
+  var cell6 = row.insertCell(5);
   cell1.innerHTML = id
   cell2.innerHTML = lat
   cell3.innerHTML = lon
   cell4.innerHTML = alt
-  cell5.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+  cell5.innerHTML = type
+  cell6.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
 document.getElementById("fpltable").deleteRow(r + 2)
 updatetable()
 showEditor(r)
@@ -781,14 +847,16 @@ var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/);
 var r = Number(o[0])
 var trows = document.getElementById("fpltable").rows.length
 trows = trows - 1
-console.log(trows)
-console.log(r)
 if (r < trows) {
-r = r + 2
+
 var id = document.getElementById("id").value;
 var lat = document.getElementById("lat").value;
 var lon = document.getElementById("lon").value;
 var alt = document.getElementById("alt").value;
+var type = document.getElementById("fpltable").rows[r].cells[4].innerHTML
+
+r = r + 2
+
 
   var table = document.getElementById("fpltable");
   var row = table.insertRow(r);
@@ -797,11 +865,13 @@ var alt = document.getElementById("alt").value;
   var cell3 = row.insertCell(2);
   var cell4 = row.insertCell(3);
   var cell5 = row.insertCell(4);
+  var cell6 = row.insertCell(5);
   cell1.innerHTML = id
   cell2.innerHTML = lat
   cell3.innerHTML = lon
   cell4.innerHTML = alt
-  cell5.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+  cell5.innerHTML = type
+  cell6.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
 document.getElementById("fpltable").deleteRow(r - 2)
 updatetable()
 r = r - 1
@@ -821,12 +891,14 @@ var r = Number(o[0])
   var cell2 = row.insertCell(1);
   var cell3 = row.insertCell(2);
   var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4);
+  var cell5 = row.insertCell(4)
+  var cell6 = row.insertCell(5);
   cell1.innerHTML = ""
   cell2.innerHTML = ""
   cell3.innerHTML = ""
   cell4.innerHTML = ""
-  cell5.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+  cell5.innerHTML = "USER"
+  cell6.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
 updatetable()
 showEditor(r)
 }
@@ -844,12 +916,14 @@ r = r + 1
   var cell2 = row.insertCell(1);
   var cell3 = row.insertCell(2);
   var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4);
+  var cell5 = row.insertCell(4)
+  var cell6 = row.insertCell(5);
   cell1.innerHTML = ""
   cell2.innerHTML = ""
   cell3.innerHTML = ""
   cell4.innerHTML = ""
-  cell5.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+  cell5.innerHTML = "USER"
+  cell6.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
 updatetable()
 showEditor(r)
 }
@@ -875,7 +949,7 @@ function readFileAsString() {
         var n = event.target.result;
         //console.log(n);
         var parser, xmlDoc;
-var table = "<tr><th>Name</th><th>Latitude</th><th>Longitude</th><th>Altitude</th><th></th></tr>";
+var table = "<tr><th>Name</th><th>Latitude</th><th>Longitude</th><th>Altitude</th><th>Type</th><th></th></tr>";
 parser = new DOMParser();
 xmlDoc = parser.parseFromString(n,"text/xml");
 
@@ -888,6 +962,9 @@ wpt = xmlDoc.getElementsByTagName("waypoint")[i];
 id = wpt.getElementsByTagName("identifier")[0].childNodes[0].nodeValue;
 lat = Number(wpt.getElementsByTagName("lat")[0].childNodes[0].nodeValue);
 lon = Number(wpt.getElementsByTagName("lon")[0].childNodes[0].nodeValue);
+type = wpt.getElementsByTagName("type")[0].childNodes[0].nodeValue;
+if (type == "USER WAYPOINT"){type = "USER"}
+if (type == "INT"){type = "FIX"}
 try{alt = Number(wpt.getElementsByTagName("elevation")[0].childNodes[0].nodeValue);
 alt = alt*3.28084
 alt = alt.toFixed(0);
@@ -904,6 +981,8 @@ table += "<tr><td>"
 + lon 
 + "</td><td>" 
 + alt 
++ "</td><td>" 
++ type
 + "</td><td><button onclick= showEditor(" + r +")>Edit</button>"
 + "</td></tr>"
 }
@@ -928,7 +1007,12 @@ var id = x.rows[i].cells[0].innerHTML
 var lat = x.rows[i].cells[1].innerHTML
 var lon = x.rows[i].cells[2].innerHTML
 var alt = x.rows[i].cells[3].innerHTML
-fp.AddUserFix(id,lat,lon,alt);
+var type = x.rows[i].cells[4].innerHTML
+
+if (type == "USER"){type = "USER WAYPOINT"}
+if (type == "FIX"){type = "INT"}
+
+fp.AddUserFix(id,lat,lon,alt,type);
 }
 fp.PrintXml();
 }
@@ -1103,14 +1187,14 @@ class FlightPlan
     this.Fp.AddChild(this.WaypointTable);
     this.Fp.AddChild(this.RouteTable);
   }
-  AddUserFix(id,lat,lon,alt)
+  AddUserFix(id,lat,lon,alt,type)
   {
     if (!this.WaypointTable.Exists("identifier",id))
     {
       var wp = new Node("waypoint","");
       this.WaypointTable.AddChild(wp);
       wp.AddChild(new Node("identifier",id));
-      wp.AddChild(new Node("type","USER WAYPOINT"));
+      wp.AddChild(new Node("type",type));
       wp.AddChild(new Node("lat",lat));
       wp.AddChild(new Node("lon",lon));
       if (alt === ""){} else {
@@ -1122,7 +1206,7 @@ class FlightPlan
     var rt = new Node("route-point","");
     this.RouteTable.AddChild(rt);
     rt.AddChild(new Node("waypoint-identifier",id));
-    rt.AddChild(new Node("waypoint-type","USER WAYPOINT"));
+    rt.AddChild(new Node("waypoint-type",type));
   }
   PrintXml()
   {
