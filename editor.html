@@ -723,11 +723,13 @@ for (index=1;index<decPoints.length - 1;index++)
   var cell3 = row.insertCell(2);
   var cell4 = row.insertCell(3);
   var cell5 = row.insertCell(4);
+  var cell6 = row.insertCell(5);
   cell1.innerHTML = id
   cell2.innerHTML = lat
   cell3.innerHTML = lon
   cell4.innerHTML = ""
-  cell5.innerHTML = "<button onclick= edittable(" + arcr +")>Edit</button>";
+  cell5.innerHTML = "USER"
+  cell6.innerHTML = "<button onclick= edittable(" + arcr +")>Edit</button>";
 }
 updatetable()
 closeArcOpen()
