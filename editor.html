@@ -413,24 +413,101 @@ opacity: 1;
   transform: rotate(45deg);
 }
 
-/*<button type="button" class="btnleft" onclick = "moveUp()"><i class="fas fa-angle-up"></i></button>>*/
+#fplDownloads {
+display: none;
+}
+
+.newfplbtn {
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  font-size: 20px;
+  padding: 5px;
+  margin: 5px;
+  height: 30px;
+  width: 160px;
+  border-radius: 10px;
+}
+
+.newfplbtn:hover {
+opacity: 1;
+}
+
+.fplbtn {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.fplbtn, .fplbtnl {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    background-color: #ffad33;
+    display: inline-block;
+    width: 160px;
+	height: 30px;
+	margin:5px;
+	padding: 5px;
+	border-radius: 10px;
+	text-align: center;
+}
+
+.fplbtn:focus, .fplbtnl:focus,
+.fplbtn:hover, .fplbtnl:hover {
+    background-color: #ff9900;
+}
+
+.fplbtn, .fplbtnl {
+	cursor: pointer; /* "hand" cursor */
+}
+
+.fplInputs {
+padding: 5px;
+}
+
+#filenamel {
+font-size: 18px;
+font-weight: 700;
+}
+
+#filename {
+font-size: 15px;
+}
+
+/*<button onclick="getlatlon()">Get LatLon from PMDG</button>*/
 </style>
 </head>
 
 <div class="header">
   <a href="#default" class="logo">IF Flightplan Tools</a>
   <div class="header-right">
-    <a class="active" href="index.html">Home</a>
+    <a href="index.html">Home</a>
     <a href="arc">Arc Maker</a>
     <a href="kml">KML to FPL</a>
-    <a href="editor">FPL Editor</a>
+    <a class="active" href="editor">FPL Editor</a>
   </div>
 </div>
-<p>Simply upload your fpl file below, edit as needed then hit download.</p>
-<input type="file" id="fpl">
-<p><label for ="filename">Filename:</label>	<input type="text" name="filename" id=filename value="flightplan">
-<button onclick="exportfpl()">Download</button></p>
-<button onclick="getlatlon()">Get LatLon from PMDG</button>
+<div id = "fplInputs">
+<h1 class="fplInputs">Fightplan Editor</h1>
+<p class="fplInputs">This webpage will allow you to edit fpl files for Infinite Flight or create a new flight plan. <br>Pick an option below!</p>
+<input type="file" name = "fpl" id="fpl" class="fplbtn">
+<label for="fpl" name="fpl" class="fplbtnl"><i class="fas fa-upload"></i> Choose a file</label>
+<button class="newfplbtn" onclick="createNew()"><i class="fas fa-plus-square"></i> Create New</button>
+</p>
+</div>
+
+<div id = "fplDownloads">
+<p><label id = "filenamel" for ="filename">Filename:</label><input id = "filename" type="text" name="filename" id=filename value="flightplan"><br>
+<button class="newfplbtn" onclick="exportfpl()"><i class="fas fa-download"></i> Download</button></p>
+</div>
+
+
 <div class="form-popup" id="WptForm">
   <form class="form-container">
   <span class="closebtn"><i class="fas fa-window-close" onclick="closeForm()"></i></span>
@@ -507,6 +584,19 @@ const println = (msg) => {
 document.getElementById('fpl').addEventListener('change', readFileAsString)
 
 var n 
+
+function createNew(){
+newfpladded()
+var table = "<tr><th>Name</th><th>Latitude</th><th>Longitude</th><th>Altitude</th><th>Type</th><th></th></tr>";
+document.getElementById("fpltable").innerHTML = table
+document.getElementById("wptnum").innerHTML = "Waypoint #0"
+Createbelow()
+}
+
+function newfpladded() {
+  document.getElementById("fplDownloads").style.display = "block";
+  document.getElementById("fplInputs").style.display = "none";
+}
 
 function getlatlon(){
 var input = prompt("Enter fix data","");
@@ -940,6 +1030,11 @@ var r = o[0]
 
 function readFileAsString() {
     var files = this.files;
+    var filename = files[0].name
+    var namesplit = filename.split(".")
+    var extension = namesplit[1]
+if (extension == "fpl"){ 
+    console.log(extension)
     if (files.length === 0) {
         console.log('No file is selected');
         return;
@@ -992,7 +1087,15 @@ table += "<tr><td>"
 document.getElementById("fpltable").innerHTML = table
 };
    reader.readAsText(files[0]);
+   
+newfpladded()
 }
+else{
+alert("Incorrect file format, Please upload a .fpl file")
+}
+
+}
+
 
 function exportfpl(){
 
