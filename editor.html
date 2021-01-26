@@ -60,6 +60,7 @@ table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
 }
+
 th,td {
   padding: 5px;
 }
@@ -480,6 +481,19 @@ font-weight: 700;
 font-size: 15px;
 }
 
+.editbtn {
+ border-radius: 15px;
+ font-size: 15px;
+ margin:0px;
+ border-top-color: white;
+ border-left-color: white;
+ border-right-color: #74F277;
+ border-bottom-color: #74F277;
+ border-color: #4caf50;
+ background-color: #4CAF50;
+ color: white;
+}
+
 /*<button onclick="getlatlon()">Get LatLon from PMDG</button>*/
 </style>
 </head>
@@ -819,7 +833,7 @@ for (index=1;index<decPoints.length - 1;index++)
   cell3.innerHTML = lon
   cell4.innerHTML = ""
   cell5.innerHTML = "USER"
-  cell6.innerHTML = "<button onclick= edittable(" + arcr +")>Edit</button>";
+  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
 }
 updatetable()
 closeArcOpen()
@@ -848,7 +862,7 @@ var trows = document.getElementById("fpltable").rows.length
 r = 1
 for (r = 1; r < trows; r++){
 
-document.getElementById("fpltable").rows[r].cells[5].innerHTML = "<button onclick= showEditor(" + r +")>Edit</button>";
+document.getElementById("fpltable").rows[r].cells[5].innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
 }
 }
 
@@ -893,7 +907,7 @@ document.getElementById("fpltable").rows[r].cells[1].innerHTML = lat;
 document.getElementById("fpltable").rows[r].cells[2].innerHTML = lon;
 document.getElementById("fpltable").rows[r].cells[3].innerHTML = alt;
 document.getElementById("fpltable").rows[r].cells[4].innerHTML = type;
-document.getElementById("fpltable").rows[r].cells[5].innerHTML = "<button onclick= showEditor(" + r +")>Edit</button>";
+document.getElementById("fpltable").rows[r].cells[5].innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
 closeForm()
 }
 
@@ -925,7 +939,7 @@ r = r - 1
   cell3.innerHTML = lon
   cell4.innerHTML = alt
   cell5.innerHTML = type
-  cell6.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
 document.getElementById("fpltable").deleteRow(r + 2)
 updatetable()
 showEditor(r)
@@ -963,7 +977,7 @@ r = r + 2
   cell3.innerHTML = lon
   cell4.innerHTML = alt
   cell5.innerHTML = type
-  cell6.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
 document.getElementById("fpltable").deleteRow(r - 2)
 updatetable()
 r = r - 1
@@ -990,7 +1004,7 @@ var r = Number(o[0])
   cell3.innerHTML = ""
   cell4.innerHTML = ""
   cell5.innerHTML = "USER"
-  cell6.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
 updatetable()
 showEditor(r)
 }
@@ -1015,7 +1029,7 @@ r = r + 1
   cell3.innerHTML = ""
   cell4.innerHTML = ""
   cell5.innerHTML = "USER"
-  cell6.innerHTML = "<button onclick= edittable(" + r +")>Edit</button>";
+  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
 updatetable()
 showEditor(r)
 }
@@ -1023,9 +1037,18 @@ showEditor(r)
 function Deleterow(r) {
 var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
 var r = o[0]
+
+var trows = document.getElementById("fpltable").rows.length
+console.log(trows)
+if (trows >= 3){
   document.getElementById("fpltable").deleteRow(r);
   updatetable()
-  showEditor(r)
+  closeForm()
+}
+  else{
+  alert("Sorry, you can't remove the last remaining waypoint")
+}
+
 }
 
 function readFileAsString() {
@@ -1080,7 +1103,7 @@ table += "<tr><td>"
 + alt 
 + "</td><td>" 
 + type
-+ "</td><td><button onclick= showEditor(" + r +")>Edit</button>"
++ "</td><td><button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>"
 + "</td></tr>"
 }
 
@@ -1091,11 +1114,10 @@ document.getElementById("fpltable").innerHTML = table
 newfpladded()
 }
 else{
-alert("Incorrect file format, Please upload a .fpl file")
+alert("Incorrect file format. Please upload a .fpl file")
 }
 
 }
-
 
 function exportfpl(){
 
