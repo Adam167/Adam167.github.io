@@ -5,18 +5,22 @@
 <script src="https://kit.fontawesome.com/7c393fec46.js" crossorigin="anonymous"></script>
 <style>
 
+body {
+  font-family: Helvetica, sans-serif;
+  }
+
 * {box-sizing: border-box;}
 
 
 .header {
   overflow: hidden;
-  background-color: #f1f1f1;
+  background-color: green;
   padding: 20px 10px;
 }
 
 .header a {
   float: left;
-  color: black;
+  color: white;
   text-align: center;
   padding: 12px;
   text-decoration: none;
@@ -26,17 +30,17 @@
 }
 
 .header a.logo {
-  font-size: 25px;
+  font-size: 35px;
   font-weight: bold;
+  color: white;
 }
 
 .header a:hover {
-  background-color: #ddd;
-  color: black;
+  background-color: #004d00;
 }
 
 .header a.active {
-  background-color: dodgerblue;
+  background-color: #ffad33;
   color: white;
 }
 
@@ -257,6 +261,7 @@ th,td {
   width: 100%;
   margin-top: 10px;
   opacity: 0.8;
+  font-size: 15px;
 }
 
 /* Add a red background color to the cancel button */
@@ -428,8 +433,10 @@ display: none;
   padding: 5px;
   margin: 5px;
   height: 30px;
-  width: 160px;
+  width: 170px;
   border-radius: 10px;
+  line-height: 1.5px;
+  font-weight: 700;
 }
 
 .newfplbtn:hover {
@@ -451,12 +458,13 @@ opacity: 1;
     color: white;
     background-color: #ffad33;
     display: inline-block;
-    width: 160px;
+    width: 170px;
 	height: 30px;
 	margin:5px;
 	padding: 5px;
 	border-radius: 10px;
 	text-align: center;
+	line-height: 1.5px;
 }
 
 .fplbtn:focus, .fplbtnl:focus,
@@ -489,7 +497,6 @@ font-size: 15px;
  border-left-color: white;
  border-right-color: #74F277;
  border-bottom-color: #74F277;
- border-color: #4caf50;
  background-color: #4CAF50;
  color: white;
 }
