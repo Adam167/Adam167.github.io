@@ -1,9 +1,12 @@
 <html>
 <head>
+<title>IF Flightplan Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body {
   font-family: Helvetica, sans-serif;
+  background-color: #1A1D21;
+  color: white;
   }
 
 * {box-sizing: border-box;}
@@ -11,8 +14,11 @@ body {
 
 .header {
   overflow: hidden;
-  background-color: green;
+  background-color: #002642;
   padding: 20px 10px;
+  border-bottom: 5px solid;
+  border-bottom-color: #E59500;
+  border-radius: 20px;
 }
 
 .header a {
@@ -24,6 +30,7 @@ body {
   font-size: 18px; 
   line-height: 25px;
   border-radius: 4px;
+  height: 50px;
 }
 
 .header a.logo {
@@ -33,11 +40,13 @@ body {
 }
 
 .header a:hover {
-  background-color: #004d00;
+  background-color: #002642;
+  border-bottom: 5px solid;
+  border-bottom-color: #E59500;
 }
 
 .header a.active {
-  background-color: #ffad33;
+  background-color: #1A1D21;
   color: white;
 }
 
@@ -64,9 +73,8 @@ body {
   <a href="#default" class="logo">IF Flightplan Tools</a>
   <div class="header-right">
     <a class="active" href="index.html">Home</a>
-    <a href="arc">Arc Maker</a>
-    <a href="kml">KML to FPL</a>
     <a href="editor">FPL Editor</a>
+    <a href="kml">KML to FPL</a>
   </div>
 </div>
 

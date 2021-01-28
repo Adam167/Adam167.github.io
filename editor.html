@@ -2,11 +2,14 @@
 <body>
 
 <head>
+<title>IF Flightplan Tools | Editor</title>
 <script src="https://kit.fontawesome.com/7c393fec46.js" crossorigin="anonymous"></script>
 <style>
 
 body {
   font-family: Helvetica, sans-serif;
+  background-color: #1A1D21;
+  color: white;
   }
 
 * {box-sizing: border-box;}
@@ -14,8 +17,11 @@ body {
 
 .header {
   overflow: hidden;
-  background-color: green;
+  background-color: #002642;
   padding: 20px 10px;
+  border-bottom: 5px solid;
+  border-bottom-color: #E59500;
+  border-radius: 20px;
 }
 
 .header a {
@@ -27,6 +33,7 @@ body {
   font-size: 18px; 
   line-height: 25px;
   border-radius: 4px;
+  height: 50px;
 }
 
 .header a.logo {
@@ -36,11 +43,13 @@ body {
 }
 
 .header a:hover {
-  background-color: #004d00;
+  background-color: #002642;
+  border-bottom: 5px solid;
+  border-bottom-color: #E59500;
 }
 
 .header a.active {
-  background-color: #ffad33;
+  background-color: #1A1D21;
   color: white;
 }
 
@@ -60,34 +69,27 @@ body {
   }
 }
 
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-
-th,td {
-  padding: 5px;
-}
 
 #fpltable {
-  font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
 }
 
-#fpltable td, #fpltable th {
-  border: 1px solid #ddd;
+td, th {
+  border: 2px solid;
+  border-color: black;
   padding: 8px;
 }
 
-#fpltable tr:nth-child(even){background-color: #f2f2f2;}
+#fpltable tr:nth-child(even){
+background-color: #384147;
+}
 
-#fpltable tr:hover {background-color: #ddd;}
 
 #fpltable th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: center;
-  background-color: #4CAF50;
+  background-color: #002642;
   color: white;
 }
 
@@ -97,15 +99,17 @@ th,td {
   position: fixed;
   bottom: 0;
   right: 15px;
-  border: 3px solid #f1f1f1;
+  border: 3px solid black;
   z-index: 9;
+  background-color: #1A1D21;
+  color: white;
 }
 
 /* Add styles to the form container */
 .form-container {
   max-width: 300px;
   padding: 10px;
-  background-color: white;
+  background-color: #1A1D21;
 }
 
 /* Full-width input fields */
@@ -122,7 +126,8 @@ th,td {
   padding: 10px;
   margin: 5px 0 22px 0;
   border: none;
-  background: #f1f1f1;
+  background: #48555E;
+  color: white;
   float: left;
   clear: left;
   font-size: 14;
@@ -133,7 +138,8 @@ th,td {
   padding: 10px;
   margin: 5px 0 22px 0;
   border: none;
-  background: #f1f1f1;
+  background: #48555E;
+  color: white;
   float: right;
   clear: right;
   font-size: 14;
@@ -158,7 +164,8 @@ th,td {
   padding: 10px;
   margin: 5px 0 22px 0;
   border: none;
-  background: #f1f1f1;
+  background: #48555E;
+  color: white;
   float: left;
   clear: left;
   font-size: 14;
@@ -169,7 +176,8 @@ th,td {
   padding: 10px;
   margin: 5px 0 22px 0;
   border: none;
-  background: #f1f1f1;
+  background: #48555E;
+  color: white;
   float: right;
   clear: right;
   font-size: 14;
@@ -208,7 +216,7 @@ th,td {
   padding: 10px;
   margin: 5px 0 22px 0;
   border: none;
-  background: #f1f1f1;
+  background: #48555E;
   float: left;
   clear: left;
   font-size: 14;
@@ -233,7 +241,7 @@ th,td {
   padding: 10px;
   margin: 5px 0 22px 0;
   border: none;
-  background: #f1f1f1;
+  background: #48555E;
   float: left;
   clear: left;
   font-size: 14;
@@ -244,7 +252,7 @@ th,td {
   padding: 10px;
   margin: 5px 0 22px 0;
   border: none;
-  background: #f1f1f1 ;
+  background: #48555E ;
   float: right;
   clear: right;
   font-size: 14;
@@ -260,7 +268,7 @@ th,td {
   cursor: pointer;
   width: 100%;
   margin-top: 10px;
-  opacity: 0.8;
+  opacity: 0.9;
   font-size: 15px;
 }
 
@@ -277,19 +285,19 @@ th,td {
   border: none;
   cursor: pointer;
   /*margin-bottom:10px;*/
-  opacity: 0.8;
+  opacity: 0.9;
   /*width: 25px;
   height: 25px;*/
   font-size: 30px;
 }
 .closebtn:hover {
-opacity: 1;
+opacity: 0.8;
 }
 
 
 /* Add some hover effects to buttons */
 .form-container .btn:hover, .open-button:hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .grid-container {
@@ -311,11 +319,11 @@ grid-row: 1 / span 3
 }
 
 .btngrid {
-	background-color: orange;
+	background-color: #ffad33;
   color: black;
   border: none;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 1;
   width: 100%;
   height: 100%;
   font-size: 25px;
@@ -323,25 +331,25 @@ grid-row: 1 / span 3
 }
 
 .btnarcgrid {
-	background-color: orange;
+	background-color: #ffad33;
   color: black;
   border: none;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 1;
   font-size: 20px;
   padding: 1px 0;
   height: 75px;
 }
   
 .btngrid:hover, .btnarcgrid:hover {
-opacity: 1;
+opacity: 0.8;
 }
 
 .labelgrid {
-	background-color: orange;
+	background-color: #ffad33;
   color: black;
   border: none;
-  opacity: 0.8;
+  opacity: 1;
   text-align: center;
   line-height: 25px;
 }
@@ -381,12 +389,12 @@ opacity: 1;
   left: 0;
   height: 25px;
   width: 25px;
-  background-color: #eee;
+  background-color: #48555E;
 }
 
 /* On mouse-over, add a grey background color */
 .container:hover input ~ .checkmark {
-  background-color: #ccc;
+  background-color: #002642;
 }
 
 /* When the checkbox is checked, add a blue background */
@@ -424,11 +432,11 @@ display: none;
 }
 
 .newfplbtn {
-  background-color: green;
+  background-color: #4CAF50;
   color: white;
   border: none;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 1;
   font-size: 20px;
   padding: 5px;
   margin: 5px;
@@ -440,7 +448,7 @@ display: none;
 }
 
 .newfplbtn:hover {
-opacity: 1;
+opacity: 0.8;
 }
 
 .fplbtn {
@@ -493,12 +501,25 @@ font-size: 15px;
  border-radius: 15px;
  font-size: 15px;
  margin:0px;
+ /*
  border-top-color: white;
  border-left-color: white;
  border-right-color: #74F277;
  border-bottom-color: #74F277;
- background-color: #4CAF50;
+ */
+ border-color: #002642;
+ background-color: #002642;
  color: white;
+}
+
+.editbtn:hover {
+border-color: #e59500;
+}
+
+#filename {
+background-color:#48555E ;
+color: white;
+border: 2px solid #48555E ;
 }
 
 /*<button onclick="getlatlon()">Get LatLon from PMDG</button>*/
@@ -509,9 +530,8 @@ font-size: 15px;
   <a href="#default" class="logo">IF Flightplan Tools</a>
   <div class="header-right">
     <a href="index.html">Home</a>
-    <a href="arc">Arc Maker</a>
-    <a href="kml">KML to FPL</a>
     <a class="active" href="editor">FPL Editor</a>
+    <a href="kml">KML to FPL</a>
   </div>
 </div>
 <div id = "fplInputs">
@@ -559,8 +579,8 @@ font-size: 15px;
      </div>
   
     
-   	<button type="button" class="btn" onclick = "savetable()">Save</button>
-    <button type="button" class="btn cancel" onclick="Deleterow()">Delete</button>
+   	<button type="button" class="btn" onclick = "savetable()"><b>Save</b></button>
+    <button type="button" class="btn cancel" onclick="Deleterow()"><b>Delete</b></button>
         
   </form>
 </div>
@@ -587,8 +607,8 @@ font-size: 15px;
     <input type="number" name="points" id="points" value = "10" class = "inputr">
 
     
-   	<button type="button" class="btn" onclick = "Arc()">Add Arc</button>
-    <button type="button" class="btn cancel" onclick="closeArcOpen()">Cancel</button>
+   	<button type="button" class="btn" onclick = "Arc()"><b>Add Arc</b></button>
+    <button type="button" class="btn cancel" onclick="closeArcOpen()"><b>Cancel</b></button>
         
   </form>
 </div>
