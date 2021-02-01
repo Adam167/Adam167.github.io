@@ -100,7 +100,8 @@ background-color: #384147;
   position: fixed;
   bottom: 0;
   right: 15px;
-  border: 3px solid black;
+  border: 3px solid #e59500;
+  border-radius: 5px;
   z-index: 9;
   background-color: #1A1D21;
   color: white;
@@ -521,6 +522,166 @@ border-color: #e59500;
 background-color:#48555E ;
 color: white;
 border: 2px solid #48555E ;
+text-align: right;
+width:150px;
+}
+
+.addfpl-popup{
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+position: fixed;
+width: 350px;
+height: 300px;
+border: 3px solid #e59500;
+z-index: 9;
+background-color: #1A1D21;
+border-radius: 20px;
+display: none;
+}
+
+/*Checkbox Style*/
+/* The container */
+.addfpl-popup .container {
+  display: block;
+  padding-left: 35px;
+  margin-left:10px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  float: left;
+  clear: left;
+}
+
+/* Hide the browser's default checkbox */
+.addfpl-popup .container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.addfpl-popup .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #48555E;
+}
+
+/* On mouse-over, add a grey background color */
+.addfpl-popup .container:hover input ~ .addfpl-popup .checkmark {
+  background-color: #002642;
+}
+
+/* When the checkbox is checked, add a blue background */
+.addfpl-popup .container input:checked ~ .addfpl-popup .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.addfpl-popup .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.addfpl-popup .container input:checked ~ .addfpl-popup .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.addfpl-popup .container .addfpl-popup .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+#addafter {
+
+margin-top: 76px;
+width:65px;
+font-size: 22px;
+height:31px;
+background-color:#48555E ;
+color: white;
+margin-left: -16px;
+border: 1px solid #48555E;
+}
+
+#AddTitle {
+width:100%;
+text-align: center;
+}
+
+.addfpl-popup .fplbtn, .addfpl-popup .fplbtnl {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    background-color: #ffad33;
+    display: inline-block;
+	height: 30px;
+	width:170px;
+	margin-left: 85px;
+	margin-top: 35px;
+	padding: 5px;
+	border-radius: 10px;
+	text-align: center;
+	line-height: 1.5px;
+}
+
+.addfpl-popup .fplbtn:focus, .addfpl-popup .fplbtnl:focus,
+.addfpl-popup .fplbtn:hover, .addfpl-popup .fplbtnl:hover {
+    background-color: #ff9900;
+    }
+    
+.addfpl-popup .closebtn {
+   position: absolute;
+  color: red;
+  margin-left: 300px;
+  padding: 5px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  font-size: 30px;
+}
+.addfpl-popup .closebtn:hover {
+opacity: 0.8;
+}
+
+.addfplbtn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 1;
+  font-size: 20px;
+  padding: 5px;
+  margin: 5px;
+  margin-top: 15px;
+  height: 40px;
+  width: 250px;
+  border-radius: 10px;
+  line-height: 1.5px;
+  font-weight: 700;
+}
+
+.addfplbtn:hover {
+opacity: 0.8;
 }
 
 /*<button onclick="getlatlon()">Get LatLon from PMDG</button>*/
@@ -528,7 +689,7 @@ border: 2px solid #48555E ;
 </head>
 
 <div class="header">
-  <a href="#default" class="logo">IF Flightplan Tools</a>
+  <a href="#default" class="logo"><i class="fas fa-tools"></i> IF Flightplan Tools</a>
   <div class="header-right">
     <a href="index.html">Home</a>
     <a class="active" href="editor">FPL Editor</a>
@@ -545,7 +706,10 @@ border: 2px solid #48555E ;
 </div>
 
 <div id = "fplDownloads">
-<p><label id = "filenamel" for ="filename">Filename:</label><input id = "filename" type="text" name="filename" id=filename value="flightplan"><br>
+
+<button class="addfplbtn" onclick="openaddnewfpl()"><i class="fas fa-plus-square"></i> Add Additional FPL</button>
+
+<p><label id = "filenamel" for ="filename">Filename:</label><input id = "filename" type="text" name="filename" id=filename value="Flightplan">.fpl
 <button class="newfplbtn" onclick="exportfpl()"><i class="fas fa-download"></i> Download</button></p>
 </div>
 
@@ -605,7 +769,7 @@ border: 2px solid #48555E ;
     <label id ="pointsl" for="points" class = "labelr"><b>Points (1 per nm recommended)</b></label><br>
 	
 	<input type="number" name="entry" id="entry" class = "inputl">
-    <input type="number" name="points" id="points" value = "10" class = "inputr">
+    <input type="number" name="points" id="points" value = "1" class = "inputr">
 
     
    	<button type="button" class="btn" onclick = "Arc()"><b>Add Arc</b></button>
@@ -613,6 +777,29 @@ border: 2px solid #48555E ;
         
   </form>
 </div>
+
+<div class="addfpl-popup" id="AddNewForm">
+<span class="closebtn"><i class="fas fa-window-close" onclick="closeaddnewfpl()"></i></span>
+<h3 id="AddTitle">Add Additional FPL file</h3><br>
+
+<label class="container"> Add at the Start
+  <input id = "addatStart" type="radio" name="radio">
+  <span class="checkmark"></span>
+</label>
+<label class="container">Add at the End
+  <input id = "addatEnd" type="radio" checked="checked" name="radio">
+  <span class="checkmark"></span>
+</label>
+<label class="container">Add after Waypoint #
+  <input id = "addat" type="radio" name="radio">
+  <span class="checkmark"></span>
+</label>
+<input type="number" name="addafter" id="addafter" value = "1">
+
+<input type="file" name = "fpl" id="fpl" class="fplbtn">
+<label for="fpl" name="fpl" class="fplbtnl"><i class="fas fa-upload"></i> Choose a file</label>
+</div>
+
 
 <table id="fpltable"></table>
 
@@ -626,13 +813,58 @@ const println = (msg) => {
 }
 
 document.getElementById('fpl').addEventListener('change', readFileAsString)
+document.getElementById('addafter').addEventListener('change', checkaddafter)
 
 var n 
 
-function createNew(){
-newfpladded()
+function checkaddafter(){
+var trows = document.getElementById("fpltable").rows.length
+
+var addafter = Number(document.getElementById("addafter").value);
+
+maxwptnum = trows - 1
+
+if (addafter > maxwptnum) {
+alert("Only " + maxwptnum + "waypoints in flight plan. Please pick a number lower than " + maxwptnum)
+document.getElementById("addafter").value = 1
+}
+}
+
+function openaddnewfpl(){
+ document.getElementById("AddNewForm").style.display = "block";
+}
+
+function closeaddnewfpl(){
+ document.getElementById("AddNewForm").style.display = "none";
+}
+
+function distance(){
+var r = 1
+var nr = 2
+var lat0 = Number(document.getElementById("fpltable").rows[r].cells[1].innerHTML);
+var lat1 = Number(document.getElementById("fpltable").rows[nr].cells[1].innerHTML);
+var lon0 = Number(document.getElementById("fpltable").rows[r].cells[2].innerHTML);
+var lon1 = Number(document.getElementById("fpltable").rows[nr].cells[2].innerHTML);
+
+var lonscale = LonMultiplier((lat0+lat1)/2);
+var dx = (lon1-lon0)*lonscale;
+var dy = lat1-lat0;
+
+dh = DistHeading(lat0,lon0,lat1,lon1);
+
+var headingToFinal=dh[1];
+var distToFinal=dh[0];
+alert(distToFinal.toFixed(1)+"nm")
+}
+
+function maketable(){
 var table = "<tr><th>Name</th><th>Latitude</th><th>Longitude</th><th>Altitude</th><th>Type</th><th></th></tr>";
 document.getElementById("fpltable").innerHTML = table
+}
+
+function createNew(){
+newfpladded()
+maketable()
 document.getElementById("wptnum").innerHTML = "Waypoint #0"
 Createbelow()
 }
@@ -848,7 +1080,7 @@ for (index=1;index<decPoints.length - 1;index++)
   var lat = decPoints[index][0].toFixed(4);
   var lon = decPoints[index][1].toFixed(4);
   var id = wptid + "-" + index
-  console.log(id,lat,lon)
+ // console.log(id,lat,lon)
   var arcr = r + index
     var table = document.getElementById("fpltable");
   var row = table.insertRow(arcr);
@@ -863,7 +1095,7 @@ for (index=1;index<decPoints.length - 1;index++)
   cell3.innerHTML = lon
   cell4.innerHTML = ""
   cell5.innerHTML = "USER"
-  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
+  cell6.innerHTML = "";
 }
 updatetable()
 closeArcOpen()
@@ -956,20 +1188,7 @@ var type = document.getElementById("fpltable").rows[r].cells[4].innerHTML
 
 r = r - 1
 
-  var table = document.getElementById("fpltable");
-  var row = table.insertRow(r);
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4);
-  var cell6 = row.insertCell(5);
-  cell1.innerHTML = id
-  cell2.innerHTML = lat
-  cell3.innerHTML = lon
-  cell4.innerHTML = alt
-  cell5.innerHTML = type
-  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
+newrow(r,id,lat,lon,alt,type)
 document.getElementById("fpltable").deleteRow(r + 2)
 updatetable()
 showEditor(r)
@@ -994,20 +1213,7 @@ var type = document.getElementById("fpltable").rows[r].cells[4].innerHTML
 r = r + 2
 
 
-  var table = document.getElementById("fpltable");
-  var row = table.insertRow(r);
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4);
-  var cell6 = row.insertCell(5);
-  cell1.innerHTML = id
-  cell2.innerHTML = lat
-  cell3.innerHTML = lon
-  cell4.innerHTML = alt
-  cell5.innerHTML = type
-  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
+newrow(r,id,lat,lon,alt,type)
 document.getElementById("fpltable").deleteRow(r - 2)
 updatetable()
 r = r - 1
@@ -1020,48 +1226,28 @@ function Createabove(r) {
 var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
 var r = Number(o[0])
 
-
-  var table = document.getElementById("fpltable");
-  var row = table.insertRow(r);
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4)
-  var cell6 = row.insertCell(5);
-  cell1.innerHTML = ""
-  cell2.innerHTML = ""
-  cell3.innerHTML = ""
-  cell4.innerHTML = ""
-  cell5.innerHTML = "USER"
-  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
-updatetable()
+var id = ""
+var lat = ""
+var lon = ""
+var alt = ""
+var type = "USER"
+newrow(r,id,lat,lon,alt,type)
 showEditor(r)
+updatetable()
 }
 
 function Createbelow(r) {
 var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/); 
 var r = Number(o[0])
 r = r + 1
-//console.log(r)
-
-
-  var table = document.getElementById("fpltable");
-  var row = table.insertRow(r);
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4)
-  var cell6 = row.insertCell(5);
-  cell1.innerHTML = ""
-  cell2.innerHTML = ""
-  cell3.innerHTML = ""
-  cell4.innerHTML = ""
-  cell5.innerHTML = "USER"
-  cell6.innerHTML = "<button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
-updatetable()
+var id = ""
+var lat = ""
+var lon = ""
+var alt = ""
+var type = "USER"
+newrow(r,id,lat,lon,alt,type)
 showEditor(r)
+updatetable()
 }
 
 function Deleterow(r) {
@@ -1069,16 +1255,19 @@ var o = document.getElementById("wptnum").innerHTML.match(/(\d+)/);
 var r = o[0]
 
 var trows = document.getElementById("fpltable").rows.length
-console.log(trows)
 if (trows >= 3){
   document.getElementById("fpltable").deleteRow(r);
   updatetable()
-  closeForm()
 }
   else{
   alert("Sorry, you can't remove the last remaining waypoint")
+  r = 1
 }
-
+var lastr = trows - 1;
+if (r == lastr){
+r = r - 1
+}
+showEditor(r)
 }
 
 function readFileAsString() {
@@ -1099,13 +1288,35 @@ if (extension == "fpl"){
         var n = event.target.result;
         //console.log(n);
         var parser, xmlDoc;
-var table = "<tr><th>Name</th><th>Latitude</th><th>Longitude</th><th>Altitude</th><th>Type</th><th></th></tr>";
+     
+ 
+ 
+if (document.getElementById('addatStart').checked == true){
+console.log("Add at the Start")
+var trows = 1
+}
+else if (document.getElementById('addatEnd').checked == true){
+console.log("Add at the End")
+var trows = document.getElementById("fpltable").rows.length 
+
+if (trows == 0){
+maketable()
+trows = 1
+} 
+}
+
+else{
+console.log("Add after x waypoint")
+var trows = Number(document.getElementById("addafter").value)
+trows = trows + 1
+}
+        
 parser = new DOMParser();
 xmlDoc = parser.parseFromString(n,"text/xml");
 
-//console.log(xmlDoc)
+
 x = xmlDoc.getElementsByTagName("waypoint").length;
-//console.log(x)
+
 i = 0
 for(i = 0; i < x; i++){
 wpt = xmlDoc.getElementsByTagName("waypoint")[i];
@@ -1122,31 +1333,39 @@ alt = alt.toFixed(0);
 catch(err){ alt = ""}
 lat = lat.toFixed(7);
 lon = lon.toFixed(7);
-var r = i + 1
-table += "<tr><td>" 
-+ id 
-+ "</td><td>" 
-+ lat 
-+ "</td><td>" 
-+ lon 
-+ "</td><td>" 
-+ alt 
-+ "</td><td>" 
-+ type
-+ "</td><td><button onclick= showEditor(" + r +") class = editbtn ><i class='fas fa-edit'></i> Edit</button>"
-+ "</td></tr>"
-}
+var r = i + trows
 
-document.getElementById("fpltable").innerHTML = table
+newrow(r,id,lat,lon,alt,type)
+
+}
+updatetable()
+document.getElementById("myInputFileID").value=null; 
 };
-   reader.readAsText(files[0]);
-   
+   reader.readAsText(files[0]); 
 newfpladded()
+closeaddnewfpl()
 }
 else{
 alert("Incorrect file format. Please upload a .fpl file")
 }
 
+}
+
+function newrow(r,id,lat,lon,alt,type){
+var table = document.getElementById("fpltable");
+  var row = table.insertRow(r);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  var cell6 = row.insertCell(5);
+  cell1.innerHTML = id;
+  cell2.innerHTML = lat;
+  cell3.innerHTML = lon;
+  cell4.innerHTML = alt;
+  cell5.innerHTML = type;
+  cell6.innerHTML = "";
 }
 
 function exportfpl(){
