@@ -612,8 +612,9 @@ display: none;
 }
 
 #addafter {
-
-margin-top: 76px;
+position: absolute;
+top: 153px;
+left: 266px;
 width:65px;
 font-size: 22px;
 height:31px;
@@ -825,7 +826,7 @@ var addafter = Number(document.getElementById("addafter").value);
 maxwptnum = trows - 1
 
 if (addafter > maxwptnum) {
-alert("Only " + maxwptnum + "waypoints in flight plan. Please pick a number lower than " + maxwptnum)
+alert("Only " + maxwptnum + " waypoints in flight plan. Please pick a number lower than " + maxwptnum)
 document.getElementById("addafter").value = 1
 }
 }
