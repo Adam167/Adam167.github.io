@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>Live API Test</title>
+<style>
+body {
+  font-family: Helvetica, sans-serif;
+  background-color: #1A1D21;
+  color: white;
+  }
+
+</style>
+</head>
+<body>
+
+<p id="info"></p>
+
+<label for="searchedflights">Choose a Flight:</label>
+
+<select name="searchedflights" id="searchedflights"></select>
+
+<button onclick="getflightplan()">Get Flight Plan</button>
+<script type='text/javascript' src='config.js'></script>
+<script>
+
+
+var apicode = config.API_KEY
+var apikey = '?apikey='+ apicode
+
+console.log(apikey)
+
+//let _data = {
+//  userIds:["b0640c04-312b-45f6-8e90-974e826f9678"]
+//}
+
+//console.log(_data)
+
+//fetch("https://api.infiniteflight.com/public/v2/user/stats" + apikey, {
+//   method: "POST",
+//    body: JSON.stringify(_data),
+//    headers: {
+//      'Content-Type': 'application/json'
+//    },
+//  })
+//  .then((response) => {
+//    return response.json()
+//  })
+//  .then((data) => {
+//    var result = data.result
+//    console.log(result)
+//  })
+  //.catch((err) => {
+  // Do something for an error here
+  //  console.log("You broke something...")
+  //})
+
+
+
+
+
+
+
+
+
+
+
+
+function getservers(){
+fetch('https://api.infiniteflight.com/public/v2/sessions'+ apikey)
+  .then((response) => {
+    return response.json()
+  })
+  .then((data) => {
+    // Work with JSON data here
+    //console.log(data)
+    var result = data.result
+    //console.log(result)
+    
+    var servers = result.length
+    //console.log(servers)
+    
+    output += servers + " servers online" + "<br>";
+    
+    for(i = 0; i < servers; i++){
+    var serverinfo = result[i]
+    var servername = serverinfo['name']
+    
+    if(servername == "Expert Server"){
+    var serverid = serverinfo['id']
+    getflights(serverid)
+    }
+
+    }
+  //document.getElementById("info").innerHTML = serverid
+  })
+  .catch((err) => {
+    // Do something for an error here
+    console.log("You broke something...")
+  })
+}
+
+function getflights(serverid){
+fetch('https://api.infiniteflight.com/public/v2/flights/'+ serverid + apikey)
+  .then((response) => {
+    return response.json()
+  })
+  .then((data) => {
+    console.log(data)
+    var result = data.result
+    console.log(result)
+    
+    var flights = result.length
+    console.log(flights)
+    var select = document.getElementById("searchedflights");
+    var foundflights = [""]      
+    var search = "marc"
+    console.log("Search Term '" + search + "'")
+    for(i = 0; i < flights; i++){
+    var flightinfo = result[i]
+    var name = flightinfo['username']
+    if (name === null){}
+    else{
+    if (name.toLowerCase().includes(search.toLowerCase()) == true) {
+    foundflights.push(flightinfo);
+    var el = document.createElement("option");
+    el.textContent = flightinfo.username + " / " + flightinfo.callsign;
+    el.value = flightinfo.flightId;
+    select.appendChild(el);
+    }
+    }
+    }
+    foundflights.shift()
+    console.log(foundflights)
+  })
+  .catch((err) => {
+     //Do something for an error here
+    console.log("You broke something...")
+  })
+}
+
+function getflightplan(){
+
+var flightId = document.getElementById("searchedflights").value;
+fetch('https://api.infiniteflight.com/public/v2/flight/'+ flightId +'/flightplan'+ apikey)
+  .then((response) => {
+    return response.json()
+  })
+  .then((data) => {
+   var result = data.result
+    console.log(result)
+  //document.getElementById("info").innerHTML = serverid
+  })
+  //.catch((err) => {
+    // Do something for an error here
+  //  console.log("You broke something...")
+ // })
+
+
+}
+
+</script>
+</body>
+</html>
