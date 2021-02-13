@@ -1625,26 +1625,26 @@
       var tid = document.getElementById("fpltable").rows[r].cells[0].innerHTML
       var tlat = document.getElementById("fpltable").rows[r].cells[1].innerHTML
       var tlon = document.getElementById("fpltable").rows[r].cells[2].innerHTML
-      var type = document.getElementById("fpltable").rows[r].cells[4].innerHTML
+      //var type = document.getElementById("fpltable").rows[r].cells[4].innerHTML
 
       var id = document.getElementById("id").value;
       var lat = document.getElementById("lat").value;
       var lon = document.getElementById("lon").value;
       var alt = document.getElementById("alt").value;
 
-      var changed = false
+      //var changed = false
 
-      if (tid != id) { changed = true }
-      if (tlat != lat) { changed = true }
-      if (tlon != lon) { changed = true }
-      if (changed == true) { type = "USER" }
+      //if (tid != id) { changed = true }
+      //if (tlat != lat) { changed = true }
+      //if (tlon != lon) { changed = true }
+      //if (changed == true) { type = "USER" }
 
       document.getElementById("fpltable").rows[r].cells[0].innerHTML = id;
       document.getElementById("fpltable").rows[r].cells[1].innerHTML = lat;
       document.getElementById("fpltable").rows[r].cells[2].innerHTML = lon;
       document.getElementById("fpltable").rows[r].cells[3].innerHTML = alt;
-      document.getElementById("fpltable").rows[r].cells[4].innerHTML = type;
-      document.getElementById("fpltable").rows[r].cells[5].innerHTML = "<button onclick= showEditor(" + r + ") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
+      //document.getElementById("fpltable").rows[r].cells[4].innerHTML = type;
+      document.getElementById("fpltable").rows[r].cells[4].innerHTML = "<button onclick= showEditor(" + r + ") class = editbtn ><i class='fas fa-edit'></i> Edit</button>";
       closeForm()
     }
 
