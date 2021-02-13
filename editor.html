@@ -857,12 +857,14 @@
         text-align: center;
         color: #E59500;
       }
+
       #pSearchingT {
         font-size: 22px;
         width: 100%;
         text-align: center;
         color: white;
       }
+
       /*<button onclick="getlatlon()">Get LatLon from PMDG</button>*/
     </style>
   </head>
@@ -1093,6 +1095,10 @@
         })
         .then((data) => {
           //console.log(data)
+
+          flightsInfo = [""]
+          IDlist = [""]
+
           var result = data.result
           //console.log(result)
 
@@ -1115,7 +1121,7 @@
               if (name.toLowerCase().includes(search.toLowerCase()) == true) {
                 var userid = flightinfo.userId;
                 var username = flightinfo.username;
-                if (username == null) { username = "No Username" };
+                if (username == null) { username = "Pilot" };
                 var callsign = flightinfo.callsign;
                 var flightid = flightinfo.flightId;
                 var curFlight = {
@@ -1135,10 +1141,10 @@
           //console.log(IDlist)
           createOptions(flightsInfo, IDlist)
         })
-        //.catch((err) => {
-          //Do something for an error here
-         // console.log("You broke something...")
-        //})
+      //.catch((err) => {
+      //Do something for an error here
+      // console.log("You broke something...")
+      //})
     }
 
     function getflightplan() {
@@ -1214,6 +1220,7 @@
     }
 
     function createOptions(flightsInfo, IDlist) {
+
       var apiIdList = {
         userIds: IDlist
       }
@@ -1225,17 +1232,18 @@
           'Content-Type': 'application/json'
         },
       })
-      .then(response => response.json()) 
-      .then(json => {
+        .then(response => response.json())
+        .then(json => {
           //console.log(json);
           // Work with JSON data here
           var result = json.result
           //console.log(result)
 
+
           var numUsers = result.length
           //console.log(numUsers)
 
-          for(u = 0; u < numUsers; u++){
+          for (u = 0; u < numUsers; u++) {
             var curUser = result[u]
             var roles = curUser.roles
             var select = document.getElementById("searchedother");
@@ -1243,14 +1251,14 @@
               if (roles[e] == 1) { select = document.getElementById("searchedmod") }
               if (roles[e] == 2) { select = document.getElementById("searchedmod") }
             }
-            if(curUser.userId == flightsInfo[u].userid){
-             var infoOrder = u
-             //console.log("In order")
+            if (curUser.userId == flightsInfo[u].userid) {
+              var infoOrder = u
+              //console.log("In order")
             }
-            else{
+            else {
               //console.log("Not in order")
-              for(i = 0; i < flightsInfo.length;i++){
-                if(curUser.userId == flightsInfo[i].userId){
+              for (i = 0; i < flightsInfo.length; i++) {
+                if (curUser.userId == flightsInfo[i].userId) {
                   var infoOrder = i
                   break;
                 }
@@ -1265,10 +1273,10 @@
           document.getElementById("searchingflights").style.display = "none";
           document.getElementById("foundflights").style.display = "block";
         })
-        .catch((err) => {
-          // Do something for an error here
-          console.log("You broke something...")
-        })
+      //.catch((err) => {
+      // Do something for an error here
+      //  console.log("You broke something...")
+      //})
     }
 
     function openaddfromlive() {
