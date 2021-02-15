@@ -10,6 +10,7 @@
   <body>
     <i class="fas fa-upload"></i>
     <button onclick="askForApproval()" id="enable">Enable notifications</button>
+    15 02 2021 2316
     <script>
 
 
@@ -17,13 +18,13 @@
       function askForApproval() {
         console.log("yo")
         if (Notification.permission === "granted") {
-          createNotification('Wow! This is great', 'created by @study.tonight', 'https://www.studytonight.com/css/resource.v2/icons/studytonight/st-icon-dark.png');
+          createNotification('Oi, Descend', 'You are Xnm from TOD', );
         }
         else {
           Notification.requestPermission(permission => {
             console.log(permission)
             if (permission === 'granted') {
-              createNotification('Wow! This is great', 'created by @study.tonight', 'https://www.studytonight.com/css/resource.v2/icons/studytonight/st-icon-dark.png');
+              createNotification('Oi, Descend', 'You are Xnm from TOD', );
             }
           });
         }
