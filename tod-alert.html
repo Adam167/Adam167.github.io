@@ -436,7 +436,9 @@
 
       <label for="searchedservers">Choose a Server:</label><select class="select-css" name="searchedservers"
         id="searchedservers">
-
+        <option value="7e5dcd44-1fb5-49cc-bc2c-a9aab1f6a856">Expert Server</option>
+        <option value="6a04ffe8-765a-4925-af26-d88029eeadba">Training Server</option>
+        <option value="5f3fdc11-35b8-4268-832f-42f1c6539ab9">Casual Server</option>
       </select><br>
 
 
@@ -574,7 +576,7 @@
     }
 
 
-
+    function getServers(){
     fetch('https://api.infiniteflight.com/public/v2/sessions' + apikey)
       .then((response) => {
         return response.json()
@@ -610,7 +612,7 @@
         //Do something for an error here
         console.log("You broke something...")
       })
-
+    }
 
     function searchflights() {
       document.getElementById("foundflights").style.display = "none";
