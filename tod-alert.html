@@ -1,0 +1,1243 @@
+<html>
+
+<body>
+
+  <head>
+    <title>IF Flightplan Tools | Flight Status</title>
+
+    <link href="all.css" rel="stylesheet">
+    <style>
+      body {
+        font-family: "Font Awesome 5 Free", Helvetica, sans-serif;
+        background-color: #1A1D21;
+        color: white;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .header {
+        overflow: hidden;
+        background-color: #002642;
+        padding: 20px 10px;
+        border-bottom: 5px solid;
+        border-bottom-color: #E59500;
+        border-radius: 20px;
+      }
+
+      .header a {
+        float: left;
+        color: white;
+        text-align: center;
+        padding: 12px;
+        text-decoration: none;
+        font-size: 18px;
+        line-height: 25px;
+        border-radius: 4px;
+        height: 50px;
+      }
+
+      .header a.logo {
+        font-size: 35px;
+        font-weight: bold;
+        color: white;
+      }
+
+      .header a:hover {
+        background-color: #002642;
+        border-bottom: 5px solid;
+        border-bottom-color: #E59500;
+      }
+
+      .header a.active {
+        background-color: #1A1D21;
+        color: white;
+      }
+
+      .header-right {
+        float: right;
+      }
+
+      @media screen and (max-width: 500px) {
+        .header a {
+          float: none;
+          display: block;
+          text-align: left;
+        }
+
+        .header-right {
+          float: none;
+        }
+      }
+
+      .importfromlive {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        opacity: 1;
+        font-size: 20px;
+        padding: 5px;
+        margin: 5px;
+        margin-top: 15px;
+        height: 40px;
+        width: 354px;
+        border-radius: 10px;
+        line-height: 1.5px;
+        font-weight: 700;
+      }
+
+      .importfromlive:hover {
+        opacity: 0.8;
+      }
+
+      .search-popup {
+        /*
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        position: fixed;
+        z-index: 9;
+        */
+        width: 430px;
+        height: 400px;
+        border: 3px solid #e59500;
+        background-color: #1A1D21;
+        border-radius: 20px;
+        padding: 10px;
+      }
+
+      #SearchTitle {
+        width: 100%;
+        text-align: center;
+        padding-left: 45px;
+      }
+
+      #searchl {
+        display: block;
+        font-size: 18px;
+        font-weight: 700;
+        margin-top: 10px;
+        padding: 10px;
+        width: 110px;
+        height: 40px;
+        float: left;
+      }
+
+      #search {
+        font-size: 15px;
+        margin-top: 10px;
+        background-color: #48555E;
+        color: white;
+        border-radius: 10px;
+        border: 2px solid black;
+        height: 40px;
+        width: 290px;
+        font-size: 16px;
+        padding: 10px;
+      }
+
+      #search:hover {
+        border-color: #e59500;
+      }
+
+      #search:focus {
+        border-color: #e59500;
+      }
+
+      .select-css {
+        display: inline-block;
+        font-size: 16px;
+        font-family: sans-serif;
+        font-weight: 700;
+        color: white;
+        line-height: 1.3;
+        padding: .6em 1.4em .5em .8em;
+        width: 400px;
+        box-sizing: border-box;
+        margin: 0;
+        border: 2px solid black;
+        box-shadow: 0 1px 0 1px rgba(0, 0, 0, .04);
+        border-radius: .5em;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background-color: #fff;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
+          linear-gradient(to bottom, #48555E 0%, #48555E 100%);
+        background-repeat: no-repeat, repeat;
+        background-position: right .7em top 50%, 0 0;
+        background-size: .65em auto, 100%;
+      }
+
+      .select-css::-ms-expand {
+        display: none;
+      }
+
+      .select-css:hover {
+        border-color: #e59500;
+      }
+
+      .select-css:focus {
+        border-color: #e59500;
+        box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+        box-shadow: 0 0 0 3px -moz-mac-focusring;
+        outline: none;
+      }
+
+      .select-css option {
+        font-weight: normal;
+      }
+
+      .SearchBtn {
+        border-radius: 15px;
+        font-size: 15px;
+        margin: 10px;
+        border-color: #002642;
+        background-color: #002642;
+        color: white;
+      }
+
+      .SearchBtn:hover {
+        border-color: #e59500;
+      }
+
+      #startSearch {
+        float: right;
+      }
+
+      #getfplbysearch {
+        background-color: #4CAF50;
+        margin-top: 30px;
+        margin-left: 115px;
+        font-size: 20px;
+        font-weight: 700;
+        padding: 10px;
+        border: none;
+      }
+
+      #getfplbysearch:hover {
+        opacity: 0.9;
+      }
+
+      #foundflights {
+        display: none;
+      }
+
+      #searchingflights {
+        display: none;
+      }
+
+      #pSearching {
+        font-size: 22px;
+        width: 100%;
+        text-align: center;
+        color: #E59500;
+      }
+
+      #pSearchingT {
+        font-size: 22px;
+        width: 100%;
+        text-align: center;
+        color: white;
+      }
+
+      .closebtn {
+        /*background-color: red;*/
+        color: red;
+        float: right;
+        padding: 5px;
+        border: none;
+        cursor: pointer;
+        /*margin-bottom:10px;*/
+        opacity: 0.9;
+        /*width: 25px;
+        height: 25px;*/
+        font-size: 30px;
+      }
+
+      .closebtn:hover {
+        opacity: 0.8;
+      }
+
+      .addfpl-popup .closebtn {
+        position: absolute;
+        color: red;
+        margin-left: 300px;
+        padding: 5px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.9;
+        font-size: 30px;
+      }
+
+      .addfpl-popup .closebtn:hover {
+        opacity: 0.8;
+      }
+
+
+      #flightStatus {
+        width: 99%;
+        margin: auto;
+        padding: 20px;
+        text-align: center;
+        display: none;
+      }
+
+      #UserInfo {
+        width: 99%;
+        margin: auto;
+        text-align: center;
+      }
+
+      .UserInfoB {
+        display: inline-block;
+        width: 255px;
+      }
+
+      .UserInfoL {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 700;
+        width: 95px;
+        text-align: right;
+      }
+
+      .UserInfoS {
+        display: inline-block;
+        width: 152px;
+        text-align: left;
+        padding-left: 3px;
+      }
+
+      #flightStatus h1 {
+        width: 100%;
+        text-align: center;
+        padding-top: 0px;
+      }
+
+      .countdown {
+        display: inline-block;
+        margin: 20px;
+        border: 5px solid #002642;
+        border-radius: 25px;
+        width: 400px;
+      }
+
+      .countdownT {
+        height: 100px;
+        width: 400px;
+        color: #E59500;
+        font-size: 60px;
+        font-weight: 900;
+        text-align: center;
+        padding: 10px 0;
+
+      }
+
+      .countdownL {
+        width: 400px;
+        font-size: 25px;
+        font-weight: 700;
+        text-align: center;
+        padding-top: 10px;
+      }
+
+      .countdownC {
+        width: 400px;
+        font-size: 22px;
+        font-weight: 700;
+        text-align: center;
+        color: #E59500;
+        margin-top: -10px;
+        height: 25px;
+      }
+
+      #myProgress {
+        width: 100%;
+        background-color: #48555E;
+        margin-top: 10px;
+        border-radius: 10px;
+      }
+
+      #myBar {
+        width: 1%;
+        height: 30px;
+        background-color: #e59500;
+        text-align: right;
+        font-size: 25px;
+        font-weight: 700;
+        padding-top: 2px;
+        padding-right: 1px;
+        border-radius: 10px;
+      }
+
+      #route {
+        width: 100%;
+        padding: 10px;
+        font-size: 25px;
+        font-weight: 700;
+        text-align: center;
+        color: #e59500;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .Refresh {
+        display: inline-block;
+        margin: 20px;
+        border: 5px solid #002642;
+        border-radius: 25px;
+        width: 200px;
+      }
+
+      .RefreshT {
+        width: 200px;
+        color: #E59500;
+        font-size: 25px;
+        font-weight: 900;
+        text-align: center;
+        padding: 10px 0;
+
+      }
+
+      .RefreshL {
+        width: 200px;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: center;
+        padding-top: 10px;
+      }
+    </style>
+  </head>
+
+  <div class="header">
+    <a href="index.html" class="logo"><i class="fas fa-tools"></i> IF Flightplan Tools</a>
+    <div class="header-right">
+      <a href="index.html">Home</a>
+      <a href="editor">FPL Editor</a>
+      <a href="kml">KML to FPL</a>
+      <a class="active" href="tod-alert">Flight Status</a>
+    </div>
+  </div>
+
+  <div id="welcome">
+    <h1 class="fplInputs">Flight Status</h1>
+    <p class="fplInputs">Check up on your Flight here and even get alerts on when its time to arm VNAV(SOON TM)</p>
+
+    <div class="search-popup" id="AddfromsearchForm">
+      <span class="closebtn"><i class="fas fa-window-close" onclick="closeaddfromlive()"></i></span>
+      <h3 id="SearchTitle"><i class="fas fa-plane-departure"></i> Find your IF Flight <i
+          class="fas fa-plane-arrival"></i>
+      </h3><br>
+
+      <label for="searchedservers">Choose a Server:</label><select class="select-css" name="searchedservers"
+        id="searchedservers">
+
+      </select><br>
+
+
+      <label id="searchl" for="search">Username:</label><input id="search" type="text" name="search">
+      <button class="SearchBtn" id="SearchBy" onclick="SearchBy()">Search by Callsign</button>
+      <button class="SearchBtn" id="startSearch" onclick="searchflights()"><i class="fas fa-search"></i> Search</button>
+
+
+      <div id="foundflights">
+        <label id="searchedflightsl" for="searchedflights">Pick a flight:</label>
+        <select class="select-css" name="searchedflights" id="searchedflights">
+          <optgroup id="searchedmod" label="Mod/Staff Members"></optgroup>
+          <optgroup id="searchedother" label="Other"></optgroup>
+        </select>
+
+        <br>
+        <button class="SearchBtn" id="getfplbysearch" onclick="getflightplan()"><i class="far fa-paper-plane"></i> Get
+          Status</button>
+      </div>
+
+      <div id="searchingflights">
+        <p id="pSearching"><i class="fas fa-circle-notch fa-spin fa-3x"></i></p>
+        <p id="pSearchingT">Searching Flights</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="flightStatus">
+
+    <h1><i class="fas fa-plane-departure"></i> Flight Status <i class="fas fa-plane-arrival"></i></h1>
+    <div id="UserInfo">
+      <div class="UserinfoB"><label class="UserInfoL"> Username:</label> <span class="UserInfoS" id="UserName"></span>
+      </div>
+      <div class="UserinfoB"><label class="UserInfoL"> Callsign:</label> <span class="UserInfoS" id="Callsign"></span>
+      </div>
+      <div class="UserinfoB"><label class="UserInfoL"> Aircraft:</label> <span class="UserInfoS"
+          id="AircraftType"></span></div>
+      <div class="UserinfoB"><label class="UserInfoL"> Livery:</label> <span class="UserInfoS" id="Livery"></span></div>
+      <div class="UserinfoB"><label class="UserInfoL"> VA/VO:</label> <span class="UserInfoS" id="VA/VO"></span></div>
+    </div>
+
+    <div id="Route">
+
+    </div>
+
+    <div id="myProgress">
+      <div id="myBar"><i class="fas fa-plane"></i></div>
+    </div>
+
+
+    <div class="countdown">
+      <div class="countdownL">
+        Estimated Arrival Time
+      </div>
+      <div id="TimeofArrival" class="countdownT">
+        00 : 00
+      </div>
+      <div id="DateofArrival" class="countdownC">
+
+      </div>
+    </div>
+
+    <div class="countdown">
+      <div class="countdownL">
+        Time To Destination
+      </div>
+      <div id="ETA" class="countdownT">
+        00 : 00 : 00
+      </div>
+      <div id="DistToDest" class="countdownC">
+
+      </div>
+    </div>
+
+    <div class="countdown">
+      <div class="countdownL">
+        Time To Top of Descent
+      </div>
+      <div id="TOD" class="countdownT">
+        00 : 00 : 00
+      </div>
+      <div id="DistToTOD" class="countdownC">
+
+      </div>
+    </div>
+
+    <br>
+
+    <div class="Refresh">
+      <div class="RefreshL">
+        Next Refresh
+      </div>
+      <div id="RefreshTime" class="RefreshT">
+        00 : 00 : 00
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hidden">
+    <p id="ETATimerID"></p>
+    <p id="TODTimerID"></p>
+    <p id="TODDistance"></p>
+    <p id="DestDistance"></p>
+    <p id="TimetoDest"></p>
+    <p id="RefreshTimerID"></p>
+  </div>
+  <script type="text/javascript" src="AircraftId.js"></script>
+  <script>
+
+    var apikey = '?apikey=xkqyn2avw4hfhfi68m8gkceakmkowmfx'
+    var ACLat
+    var ACLon
+    var ACTrack
+    var ACSpeed
+    var ACAlt
+
+    var timeToDist
+    var timeToTOD
+
+    var hasAlt
+
+    var Refreshtimer
+
+    var TotalFPLDist = 0
+
+    // 2 Degree Slope
+    var VnavSlope = 212.1826283
+
+    var flightsInfo = [""]
+    var IDlist = [""]
+    var fltplan = [""]
+    const println = (msg) => {
+      console.log(msg);
+    }
+
+
+
+    fetch('https://api.infiniteflight.com/public/v2/sessions' + apikey)
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        // Work with JSON data here
+        //console.log(data)
+        var result = data.result
+        //console.log(result)
+
+        var servers = result.length
+        //console.log(servers)
+
+        var select = document.getElementById("searchedservers")
+
+        for (i = 0; i < servers; i++) {
+          var serverinfo = result[i]
+          var servername = serverinfo['name']
+
+          var el = document.createElement("option");
+          el.textContent = serverinfo['name'];
+          el.value = serverinfo['id'];
+          select.appendChild(el);
+
+          if (servername == "Expert Server") {
+            var serverid = serverinfo['id']
+            document.getElementById("searchedservers").value = serverid;
+          }
+
+        }
+      })
+      .catch((err) => {
+        //Do something for an error here
+        console.log("You broke something...")
+      })
+
+
+    function searchflights() {
+      document.getElementById("foundflights").style.display = "none";
+      document.getElementById("searchingflights").style.display = "block";
+      var select = document.getElementById("searchedflights");
+      var length = select.options.length;
+      for (i = length - 1; i >= 0; i--) {
+        select.options[i] = null;
+      }
+
+      var serverid = document.getElementById("searchedservers").value;
+      fetch('https://api.infiniteflight.com/public/v2/flights/' + serverid + apikey)
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          //console.log(data)
+
+          flightsInfo = [""]
+          IDlist = [""]
+
+          var result = data.result
+          //console.log(result)
+
+          if (document.getElementById('searchl').innerHTML == "Username:") {
+            var searchterm = "username"
+          }
+          else {
+            var searchterm = "callsign"
+          }
+
+          var flights = result.length
+
+          var search = document.getElementById("search").value;
+          // console.log("Search Term '" + search + "'")
+          for (i = 0; i < flights; i++) {
+            var flightinfo = result[i]
+            var name = flightinfo[searchterm]
+            if (name === null) { }
+            else {
+              if (name.toLowerCase().includes(search.toLowerCase()) == true) {
+                var userid = flightinfo.userId;
+                var username = flightinfo.username;
+                if (username == null) { username = "Pilot" };
+                var callsign = flightinfo.callsign;
+                var flightid = flightinfo.flightId;
+                var curFlight = {
+                  userid: userid,
+                  callsign: callsign,
+                  username: username,
+                  flightid: flightid,
+                }
+                flightsInfo.push(curFlight)
+                IDlist.push(userid)
+              }
+            }
+          }
+          flightsInfo.shift()
+          IDlist.shift()
+          //console.log(flightsInfo)
+          //console.log(IDlist)
+          createOptions(flightsInfo, IDlist)
+        })
+      //.catch((err) => {
+      //Do something for an error here
+      // console.log("You broke something...")
+      //})
+    }
+
+    function getflightplan() {
+
+
+      fltplan = [""]
+      var flightId = document.getElementById("searchedflights").value;
+      fetch('https://api.infiniteflight.com/public/v2/flight/' + flightId + '/flightplan' + apikey)
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+
+          var result = data.result
+          //console.log(result)
+          if (result != null) {
+            var flightplan = result.flightPlanItems
+            //console.log(flightplan)
+            numwpts = flightplan.length
+
+            for (i = 0; i < numwpts; i++) {
+
+              waypoint = flightplan[i]
+
+              if (waypoint.children == null) {
+                extractinfo(waypoint);
+              }
+              else {
+                var numchild = flightplan[i].children.length
+                //console.log("procedure with " + numchild)
+                for (n = 0; n < numchild; n++) {
+                  waypoint = flightplan[i].children[n];
+                  extractinfo(waypoint);
+                }
+              }
+
+            }
+            fltplan.shift()
+            addDistanceToFPL()
+            //console.log(fltplan)
+            document.getElementById("Route").innerHTML = fltplan[0].wptId + " - " + fltplan[(fltplan.length) - 1].wptId
+            getFlightLoc()
+          }
+          else {
+            alert("Selected user has not filed a flight plan. Please pick another user.")
+          }
+        })
+        .catch((err) => {
+          console.log("You broke something...")
+        })
+
+
+    }
+
+    function extractinfo(waypoint) {
+      var curWpt = ""
+      if (waypoint.children == null) {
+        if (waypoint.identifier == null) {
+          var id = waypoint.name
+        }
+        else {
+          var id = waypoint.identifier
+        }
+
+        var location = waypoint.location
+        var lat = location.latitude.toFixed(7)
+        var lon = location.longitude.toFixed(7)
+        var alt = waypoint.altitude
+
+        if (alt == -1) { alt = "" }
+
+        var curFlight = {
+          wptId: id,
+          lat: lat,
+          lon: lon,
+          alt: alt,
+          dist: "",
+        }
+        fltplan.push(curFlight)
+        // newrow(r, id, lat, lon, alt) // ------ Edit to Array ------
+      }
+
+    }
+
+    function createOptions(flightsInfo, IDlist) {
+
+      var apiIdList = {
+        userIds: IDlist
+      }
+      //console.log(apiIdList)
+      fetch("https://api.infiniteflight.com/public/v2/user/stats" + apikey, {
+        method: "POST",
+        body: JSON.stringify(apiIdList),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+        .then(response => response.json())
+        .then(json => {
+          //console.log(json);
+          // Work with JSON data here
+          var result = json.result
+          //console.log(result)
+
+
+          var numUsers = result.length
+          //console.log(numUsers)
+
+          for (u = 0; u < numUsers; u++) {
+            var curUser = result[u]
+            var roles = curUser.roles
+            var select = document.getElementById("searchedother");
+            for (e = 0; e < roles.length; e++) {
+              if (roles[e] == 1) { select = document.getElementById("searchedmod") }
+              if (roles[e] == 2) { select = document.getElementById("searchedmod") }
+            }
+            if (curUser.userId == flightsInfo[u].userid) {
+              var infoOrder = u
+              //console.log("In order")
+            }
+            else {
+              //console.log("Not in order")
+              for (i = 0; i < flightsInfo.length; i++) {
+                if (curUser.userId == flightsInfo[i].userId) {
+                  var infoOrder = i
+                  break;
+                }
+              }
+            }
+            var el = document.createElement("option");
+            el.textContent = flightsInfo[infoOrder].username + " / " + flightsInfo[infoOrder].callsign;
+            el.value = flightsInfo[infoOrder].flightid;
+            select.appendChild(el);
+
+          }
+          document.getElementById("searchingflights").style.display = "none";
+          document.getElementById("foundflights").style.display = "block";
+        })
+      //.catch((err) => {
+      // Do something for an error here
+      //  console.log("You broke something...")
+      //})
+    }
+
+    function flightStatusClose() {
+      document.getElementById("flightStatus").style.display = "none";
+      document.getElementById("welcome").style.display = "block";
+    }
+
+    function flightStatusOpen() {
+      document.getElementById("welcome").style.display = "none";
+      document.getElementById("flightStatus").style.display = "block";
+
+    }
+
+    function SearchBy() {
+      if (document.getElementById('searchl').innerHTML == "Username:") {
+        document.getElementById('searchl').innerHTML = "Callsign:"
+        document.getElementById('SearchBy').innerHTML = "Search by Username"
+      }
+      else {
+        document.getElementById('searchl').innerHTML = "Username:"
+        document.getElementById('SearchBy').innerHTML = "Search by Callsign"
+      }
+    }
+
+    function getFlightLoc() {
+      var serverid = document.getElementById("searchedservers").value;
+      fetch('https://api.infiniteflight.com/public/v2/flights/' + serverid + apikey)
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          //console.log(data)
+
+          flightsInfo = [""]
+          IDlist = [""]
+
+          var result = data.result
+          //console.log(result)
+
+          var flights = result.length
+
+          for (i = 0; i < flights; i++) {
+            var flightinfo = result[i]
+            if (flightinfo.flightId == document.getElementById("searchedflights").value) {
+              ACLat = flightinfo.latitude
+              ACLon = flightinfo.longitude
+              ACTrack = flightinfo.track
+              ACSpeed = flightinfo.speed
+              ACAlt = flightinfo.altitude
+              document.getElementById("UserName").innerHTML = flightinfo.username
+              document.getElementById("Callsign").innerHTML = flightinfo.callsign
+              document.getElementById("VA/VO").innerHTML = flightinfo.virtualOrganization
+              var LivId = flightinfo.liveryId
+              GetLivery(LivId)
+              break;
+            }
+          }
+          if (ACSpeed > 35) {
+            nextwpt()
+          }
+          else {
+            console.log()
+            document.getElementById("TimeofArrival").innerHTML = "ON"
+            document.getElementById("ETA").innerHTML = "GROUND"
+            document.getElementById("TOD").innerHTML = "NO DATA"
+            document.getElementById("RefreshTime").innerHTML = "N/A"
+            flightStatusOpen()
+          }
+
+        })
+      //.catch((err) => {
+      //Do something for an error here
+      // console.log("You broke something...")
+      //})
+    }
+
+
+    function nextwpt() {
+      var distToNext = 13000
+      var lat0 = Number(ACLat)
+      var lon0 = Number(ACLon)
+      //console.log(ACTrack)
+      var nextWptID = "Not Found"
+      var nextWptRow = 0
+
+      for (x = 1; x < fltplan.length; x++) {
+        var lat1 = Number(fltplan[x].lat)
+        var lon1 = Number(fltplan[x].lon)
+        dh = DistHeading(lat0, lon0, lat1, lon1);
+        var headingToFix = dh[1];
+        var distToFix = dh[0];
+        //console.log(distToFix + "@" + headingToFix)
+
+        var headingdiff = ACTrack - headingToFix
+        headingdiff = Math.abs(headingdiff)
+        if (headingdiff > 180) {
+          headingdiff = ACTrack + headingToFix
+          if (headingdiff > 180) {
+            headingdiff = Math.abs(headingdiff - 360)
+          }
+        }
+        // Heading diff now final
+        //console.log(distToFix + "@" + headingToFix, headingdiff, fltplan[x].wptId)
+        if (headingdiff < 90) {
+          if (distToFix < distToNext) {
+            distToNext = distToFix.toFixed(2)
+            nextWptID = fltplan[x].wptId
+            nextWptRow = x
+          }
+        }
+      }
+      //console.log(nextWptID, distToNext)
+      DistanceToEnd(distToNext, nextWptRow)
+      DistanceToAlt(distToNext, nextWptRow)
+      Timers()
+      flightStatusOpen()
+    }
+
+    function DistanceToEnd(distToNext, nextWptRow) {
+      var loopStart = nextWptRow + 1;
+      var distToEnd = Number(distToNext);
+      for (i = loopStart; i < fltplan.length; i++) {
+        distToEnd = distToEnd + Number(fltplan[i].dist)
+        //console.log(distToEnd)
+      }
+      document.getElementById("DestDistance").innerHTML = distToEnd
+      document.getElementById("DistToDest").innerHTML = distToEnd.toFixed(1) + "nm"
+
+      var distcovered = TotalFPLDist - distToEnd
+      var percentComplete = (distcovered / TotalFPLDist) * 100
+      //console.log(percentComplete.toFixed(1) + "%")
+      if (percentComplete < 100) { document.getElementById("myBar").style.width = percentComplete.toFixed(1) + "%" }
+
+      timeToDist = distToEnd / ACSpeed
+
+      //timeToDistHr = Math.floor(timeToDist)
+      //timeToDistMin = (timeToDist - timeToDistHr) * 60
+      //timeToDistSec = (timeToDistMin - Math.floor(timeToDistMin)) * 60
+      //timeToDistSec = timeToDistSec.toFixed(0)
+      //timeToDistMin = Math.floor(timeToDistMin)
+      //console.log(distToEnd.toFixed(2) + "nm", timeToDistHr + "hrs " + timeToDistMin + "m " + timeToDistSec + "s")
+
+
+    }
+
+    function DistanceToAlt(distToNext, nextWptRow) {
+      hasAlt = false
+      var distToAlt = Number(distToNext)
+      if (fltplan[nextWptRow].alt == "") {
+        var loopStart = nextWptRow + 1;
+        for (i = loopStart; i < fltplan.length; i++) {
+          distToAlt = distToAlt + Number(fltplan[i].dist)
+          if (fltplan[i].alt != "") {
+            var nextAlt = fltplan[i].alt
+            var nextAltId = fltplan[i].wptId
+            hasAlt = true
+            break;
+          }
+        }
+      }
+      else {
+        var nextAlt = fltplan[nextWptRow].alt
+        var nextAltId = fltplan[nextWptRow].wptId
+        hasAlt = true
+      }
+      //console.log(nextAltId, nextAlt, distToAlt, ACAlt)
+
+      var AltToLose = ACAlt - nextAlt
+      var TODDist = distToAlt - (AltToLose / VnavSlope)
+
+      document.getElementById("TODDistance").innerHTML = TODDist
+      document.getElementById("DistToTOD").innerHTML = TODDist.toFixed(1) + "nm"
+
+      timeToTOD = TODDist / ACSpeed
+
+      //timeToTODHr = Math.floor(timeToTOD)
+      //timeToTODMin = (timeToTOD - timeToTODHr) * 60
+      //timeToTODSec = (timeToTODMin - Math.floor(timeToTODMin)) * 60
+      //timeToTODSec = timeToTODSec.toFixed(0)
+      //timeToTODMin = Math.floor(timeToTODMin)
+      //console.log(TODDist.toFixed(2) + "nm", timeToTODHr + "hrs " + timeToTODMin + "m " + timeToTODSec + "s")
+    }
+
+    function Timers() {
+
+      var x = Number(document.getElementById("ETATimerID").innerHTML)
+      var t = Number(document.getElementById("TODTimerID").innerHTML)
+      clearInterval(x)
+      clearInterval(t)
+
+      var currentDate = new Date();
+      var ArrivalTime = new Date(currentDate.getTime() + timeToDist * 3600000);
+
+      var TimeofArrivalH = String(ArrivalTime.getHours())
+      if (TimeofArrivalH.length == 1) { TimeofArrivalH = "0" + TimeofArrivalH }
+
+      var TimeofArrivalM = String(ArrivalTime.getMinutes())
+      if (TimeofArrivalM.length == 1) { TimeofArrivalM = "0" + TimeofArrivalM }
+
+      document.getElementById("TimeofArrival").innerHTML = TimeofArrivalH + " : " + TimeofArrivalM
+      var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      document.getElementById("DateofArrival").innerHTML = ArrivalTime.getDate() + " " + months[ArrivalTime.getMonth()]
+
+      var TODTime = new Date(currentDate.getTime() + timeToTOD * 3600000);
+
+
+      var x = setInterval(function () {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = ArrivalTime - now;
+        //document.getElementById("TimetoDest").innerHTML = distance
+        // Time calculations for days, hours, minutes and seconds
+        //var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        var minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+        var seconds = String(Math.floor((distance % (1000 * 60)) / 1000));
+        if (hours.length == 1) { hours = "0" + hours }
+        if (minutes.length == 1) { minutes = "0" + minutes }
+        if (seconds.length == 1) { seconds = "0" + seconds }
+        // Output the result in an element with id="demo"
+        document.getElementById("ETA").innerHTML = hours + " : "
+          + minutes + " : " + seconds;
+        var newTotalDist = Number(document.getElementById("DestDistance").innerHTML) - (ACSpeed / 3600)
+        document.getElementById("DistToDest").innerHTML = newTotalDist.toFixed(1) + "nm"
+        document.getElementById("DestDistance").innerHTML = newTotalDist
+        //var distcovered = TotalFPLDist - newTotalDist
+        var percentComplete = ((TotalFPLDist - newTotalDist) / TotalFPLDist) * 100
+        //console.log(percentComplete.toFixed(1) + "%")
+        if (percentComplete < 100) { document.getElementById("myBar").style.width = percentComplete.toFixed(1) + "%" }
+
+        // If the count down is over, write some text 
+        if (distance < 0) {
+          clearInterval(x);
+          document.getElementById("ETA").innerHTML = "00 : 00 : 00";
+          document.getElementById("DistToDest").innerHTML = ""
+        }
+      }, 1000);
+
+      if (hasAlt == true) {
+        var t = setInterval(function () {
+         
+          // Get today's date and time
+          var TODnow = new Date().getTime();
+
+          // Find the distance between now and the count down date
+          var TODdistance = TODTime - TODnow;
+          // Time calculations for days, hours, minutes and seconds
+          //var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var TODhours = String(Math.floor((TODdistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+          var TODminutes = String(Math.floor((TODdistance % (1000 * 60 * 60)) / (1000 * 60)));
+          var TODseconds = String(Math.floor((TODdistance % (1000 * 60)) / 1000));
+          if (TODhours.length == 1) { TODhours = "0" + TODhours }
+          if (TODminutes.length == 1) { TODminutes = "0" + TODminutes }
+          if (TODseconds.length == 1) { TODseconds = "0" + TODseconds }
+          // Output the result in an element with id="demo"
+          document.getElementById("TOD").innerHTML = TODhours + " : "
+            + TODminutes + " : " + TODseconds;
+
+          var newTotalTOD = Number(document.getElementById("TODDistance").innerHTML) - (ACSpeed / 3600)
+          document.getElementById("DistToTOD").innerHTML = newTotalTOD.toFixed(1) + "nm"
+          document.getElementById("TODDistance").innerHTML = newTotalTOD
+
+          // If the count down is over, write some text 
+          if (TODdistance < 0) {
+            clearInterval(t);
+            document.getElementById("TOD").innerHTML = "PAST TOD";
+            document.getElementById("DistToTOD").innerHTML = ""
+          }
+
+        }, 1000);
+        document.getElementById("TODTimerID").innerHTML = t
+      }
+      else {
+        document.getElementById("TOD").innerHTML = "NO ALT"
+        document.getElementById("DistToTOD").innerHTML = "IN FLIGHT PLAN"
+      }
+      document.getElementById("ETATimerID").innerHTML = x
+
+      var distance = ArrivalTime - currentDate;
+      console.log(distance)
+      Refreshtimer = 7200000 // 2hr
+      if (distance < 43200000) { //12hr
+        Refreshtimer = 3600000 // 1hr
+        if (distance < 14400000) { //4hr
+          Refreshtimer = 1800000 // 30m
+          if (distance < 7200000) { //2hr
+            Refreshtimer = 900000 // 15m
+            if (distance < 3600000) { //1hr
+              Refreshtimer = 300000 // 5m
+            }
+          }
+        }
+      }
+      console.log(Refreshtimer)
+      var RefreshTime = new Date(currentDate.getTime() + Refreshtimer);
+
+      // Update the count down every 1 second
+      var r = setInterval(function () {
+
+        // Get today's date and time
+        var timernow = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var Tdistance = RefreshTime - timernow;
+
+        // Time calculations for days, hours, minutes and seconds
+        var Thours = String(Math.floor((Tdistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        var Tminutes = String(Math.floor((Tdistance % (1000 * 60 * 60)) / (1000 * 60)));
+        var Tseconds = String(Math.floor((Tdistance % (1000 * 60)) / 1000));
+        if (Thours.length == 1) { Thours = "0" + Thours}
+        if (Tminutes.length == 1) { Tminutes = "0" + Tminutes }
+        if (Tseconds.length == 1) { Tseconds = "0" + Tseconds }
+
+        // Output the result in an element with id="demo"
+        document.getElementById("RefreshTime").innerHTML = Thours + " : "
+          + Tminutes + " : " + Tseconds;
+
+        // If the count down is over, write some text 
+        if (Tdistance < 0) {
+          clearInterval(r);
+          console.log("Refresh Triggered!")
+          getflightplan()
+        }
+      }, 1000)
+    }
+
+
+
+
+
+    function GetLivery(LivId) {
+      for (a = 0; a < aircraftIds.length; a++) {
+        if (aircraftIds[a].LiveryId == LivId) {
+          document.getElementById("AircraftType").innerHTML = aircraftIds[a].AircraftName
+          document.getElementById("Livery").innerHTML = aircraftIds[a].LiveryName
+          break;
+        }
+      }
+    }
+
+    function addDistanceToFPL() {
+      TotalFPLDist = 0
+      for (i = 1; i < fltplan.length; i++) {
+        var previ = i - 1
+        var lat0 = Number(fltplan[previ].lat)
+        var lon0 = Number(fltplan[previ].lon)
+        var lat1 = Number(fltplan[i].lat)
+        var lon1 = Number(fltplan[i].lon)
+
+        dh = DistHeading(lat0, lon0, lat1, lon1);
+        //var headingToFinal = dh[1];
+        var distToFinal = dh[0];
+        //console.log(distToFinal.toFixed(1) + "nm")
+        fltplan[i].dist = distToFinal.toFixed(2)
+        TotalFPLDist = Number(TotalFPLDist) + Number(distToFinal.toFixed(2))
+      }
+    }
+
+    function newfpladded() { // Could be useful after renaming
+      document.getElementById("fplDownloads").style.display = "block";
+      document.getElementById("fplInputs").style.display = "none";
+    }
+
+    // returns the angle between two headings
+    function AngleBetween(heading1, heading2) {
+      var h1 = FixHeading(heading1);
+      var h2 = FixHeading(heading2);
+      var delta = h1 > h2 ? h1 - h2 : h2 - h1;
+      if (delta > 180)
+        delta = 360 - delta;
+      //println("heading1="+heading1+" heading2="+heading2);
+      //println("fxedheading1="+h1+" fixedheading2="+h2+" delta="+delta);
+      return delta;
+    }
+
+    // returns a longitude scaling factor for the given latitude. 
+    function LonMultiplier(latitude) {
+      return 1 / Math.sin((90 - latitude) * Math.PI * 2 / 360);
+    }
+
+    // small headings around 0 are returned as 0
+    // headings larger than 360 are reduced to a value less than 360
+    // negative headings are converted to a positive number
+    function FixHeading(headingdiff) {
+      var h = headingdiff;
+      if (Math.abs(h) < .1)
+        return 0;
+      if ((Math.abs(h) / 360) >= 1)
+        h = h % 360;
+      if (h < 0) {
+        return 360 + h;
+      }
+      return h;
+    }
+
+    function DistHeading(latfrom, lonfrom, latto, lonto) {
+      var lonMult = LonMultiplier((latfrom + latto) / 2);
+      var dy = (latto - latfrom) * 60;
+      var dx = ((lonto - lonfrom) / lonMult) * 60;
+
+      var dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+      if (dx == 0)
+        dx = .000001;
+      var dyx = dy / dx;
+      var angleRadians = Math.atan(dyx);
+      var angleDegrees = angleRadians * 180 / Math.PI;
+      var heading = FixHeading(90 - angleDegrees);
+      if (dx < 0)
+        heading = 270 - angleDegrees;
+
+      return [dist, heading];
+    }
+
+
+  </script>
+</body>
+
+</html>
