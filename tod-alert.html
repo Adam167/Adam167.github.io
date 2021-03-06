@@ -651,19 +651,20 @@
           Not Set
         </div>
       </div>
-
-      <br>
-
-      <div class="Refresh">
-        <div class="RefreshL">
-          Next Refresh
-        </div>
-        <div id="RefreshTime" class="RefreshT">
-          00 : 00 : 00
-        </div>
-      </div>
-
     </div>
+
+    <br>
+
+    <div class="Refresh">
+      <div class="RefreshL">
+        Next Refresh
+      </div>
+      <div id="RefreshTime" class="RefreshT">
+        00 : 00 : 00
+      </div>
+    </div>
+
+
 
   </div>
 
@@ -971,9 +972,11 @@
 
       if ('Notification' in window) {
         // API supported
-      } 
+        console.log("suported")
+      }
       else {
         // API not supported
+        console.log("Not suported, notifs hidden")
         document.getElementById("Notifs").style.display = "none";
       }
     }
