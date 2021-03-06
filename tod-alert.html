@@ -332,6 +332,7 @@
         border: 5px solid #002642;
         border-radius: 25px;
         width: 400px;
+        vertical-align: top;
       }
 
       .countdownT {
@@ -397,7 +398,7 @@
 
       .Refresh {
         display: inline-block;
-        margin: 20px;
+        margin: 10px;
         border: 5px solid #002642;
         border-radius: 25px;
         width: 200px;
@@ -420,6 +421,71 @@
         text-align: center;
         padding-top: 10px;
       }
+
+
+      .Notif {
+        display: inline-block;
+        margin: 20px;
+        margin-top: 0px;
+        border: 5px solid #002642;
+        border-radius: 25px;
+        width: 300px;
+        text-align: center;
+      }
+
+      .NotifL {
+        width: 300px;
+        font-size: 25px;
+        font-weight: 700;
+        text-align: center;
+        padding-top: 10px;
+        color: white;
+      }
+
+      .NotifLM {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: center;
+        margin: 20px;
+      }
+
+      .Notifin {
+        display: inline-block;
+        width: 70px;
+        background-color: #48555E;
+        color: white;
+        border-radius: 10px;
+        border: 2px solid black;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 15px;
+        padding: 5px;
+      }
+
+      .NotifStatus{
+        color: #E59500;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .NotifBtn {
+        border-radius: 8px;
+        font-size: 15px;
+        margin: 2px;
+        border-color: #002642;
+        background-color: #002642;
+        color: white;
+        text-align: center;
+        min-width: 75px;
+      }
+
+      .NotifBtn:hover {
+        border-color: #e59500;
+      }
+
     </style>
   </head>
 
@@ -536,6 +602,24 @@
 
     <br>
 
+    <div class="Notif">
+      <div class="NotifL">
+        Notification 1
+      </div>
+
+      <label id="Notif1L" class="NotifLM" for="Notif1M">Minutes to TOD</label><input name="Notif1M" id="Notif1M" class="NotifIn" type="number" value="1">
+      <br>
+      <button onclick="SetNotif(1)" class="NotifBtn" ><i class="fas fa-plus-circle"></i> Add</button>
+      <button id="Notif1TypeBtn" onclick="ChangeNotif(1)" class="NotifBtn" >Switch Type</button>
+      <button onclick="ClearNotif(1)" class="NotifBtn" ><i class="fas fa-times-circle"></i> Clear</button>
+
+      <div id="Notif1S" class="NotifStatus">
+        Not Set
+      </div>
+    </div>
+
+    <br>
+
     <div class="Refresh">
       <div class="RefreshL">
         Next Refresh
@@ -553,8 +637,13 @@
     <p id="TODDistance"></p>
     <p id="DestDistance"></p>
     <p id="TimetoDest"></p>
+    <p id="TimetoTOD"></p>
     <p id="RefreshTimerID"></p>
+    <p id="NotifID1"></p>
+    <p id="NotifID2"></p>
+    <p id="NotifID3"></p>
   </div>
+
   <script type="text/javascript" src="AircraftId.js"></script>
   <script>
 
@@ -1044,7 +1133,7 @@
 
         // Find the distance between now and the count down date
         var distance = ArrivalTime - now;
-        //document.getElementById("TimetoDest").innerHTML = distance
+        document.getElementById("TimetoDest").innerHTML = distance
         // Time calculations for days, hours, minutes and seconds
         //var days = Math.floor(distance / (1000 * 60 * 60 * 24));
         var hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
@@ -1082,6 +1171,7 @@
           var TODdistance = TODTime - TODnow;
           // Time calculations for days, hours, minutes and seconds
           //var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          document.getElementById("TimetoTOD").innerHTML = TODdistance
           var TODhours = String(Math.floor((TODdistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
           var TODminutes = String(Math.floor((TODdistance % (1000 * 60 * 60)) / (1000 * 60)));
           var TODseconds = String(Math.floor((TODdistance % (1000 * 60)) / 1000));
@@ -1161,8 +1251,53 @@
     }
 
 
+    function SetNotif(NotifNum){
+      console.log(NotifNum)
 
+      var currNotifTimeM = document.getElementById('Notif' + NotifNum + 'M').value
+      var currNotifTime = currNotifTimeM * 60000
 
+      if (document.getElementById('Notif'+ NotifNum + 'L').innerHTML == "Minutes to TOD") {
+       var currNotifType = "TOD" 
+      }
+      else {
+        var currNotifType = "Dest"
+      }
+
+      if(NotifNum == 1){
+        var Notif1Time = currNotifTime
+        var Notif1Type = currNotifType
+
+        var Notif1Timer = setInterval(function () {
+          
+          if (Notif1Time > Number(document.getElementById('Timeto'+ Notif1Type).innerHTML)){
+            // Adam Send Notif here
+            alert("Your notifcation kind Sir")
+            document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notifcation Sent"
+            clearInterval(Notif1Timer)
+          }
+        }, 1000)
+        document.getElementById("NotifID"+ NotifNum).innerHTML = Notif1Timer
+        document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif1Type
+      } 
+    }
+
+    function ClearNotif(NotifNum){
+      console.log(NotifNum)
+      clearInterval(document.getElementById("NotifID"+ NotifNum).innerHTML)
+      document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Not Set"
+    }
+
+    function ChangeNotif(NotifNum){
+      //console.log(NotifNum)
+
+      if (document.getElementById('Notif'+ NotifNum + 'L').innerHTML == "Minutes to TOD") {
+        document.getElementById('Notif'+ NotifNum + 'L').innerHTML = "Minutes to Dest"
+      }
+      else {
+        document.getElementById('Notif'+ NotifNum + 'L').innerHTML = "Minutes to TOD"
+      }
+    }
 
     function GetLivery(LivId) {
       for (a = 0; a < aircraftIds.length; a++) {
