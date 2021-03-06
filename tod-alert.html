@@ -311,6 +311,7 @@
         font-weight: 700;
         width: 95px;
         text-align: right;
+        vertical-align: top;
       }
 
       .UserInfoS {
@@ -318,6 +319,7 @@
         width: 152px;
         text-align: left;
         padding-left: 3px;
+        vertical-align: top;
       }
 
       #flightStatus h1 {
@@ -682,6 +684,7 @@
   </div>
 
   <script type="text/javascript" src="AircraftId.js"></script>
+  <script type="text/javascript" src="Messages.js"></script>
   <script>
 
     var apikey = '?apikey=xkqyn2avw4hfhfi68m8gkceakmkowmfx'
@@ -700,7 +703,8 @@
 
     var TotalFPLDist = 0
 
-    var UsernameMsg
+    var TitleName
+    var BodyMsg
 
     // 2 Degree Slope
     var VnavSlope = 212.1826283
@@ -1017,7 +1021,7 @@
               ACTrack = flightinfo.track
               ACSpeed = flightinfo.speed
               ACAlt = flightinfo.altitude
-              document.getElementById("UserName").innerHTML = flightinfo.username
+              document.getElementById("UserName").innerHTML = flightinfo.username             
               document.getElementById("Callsign").innerHTML = flightinfo.callsign
               document.getElementById("VA/VO").innerHTML = flightinfo.virtualOrganization
               var LivId = flightinfo.liveryId
@@ -1026,6 +1030,7 @@
             }
           }
           if (ACSpeed > 35) {
+            Usernamemessage()
             nextwpt()
           }
           else {
@@ -1313,6 +1318,7 @@
       }
 
 
+
       var currNotifTimeM = document.getElementById('Notif' + NotifNum + 'M').value
       var currNotifTime = currNotifTimeM * 60000
 
@@ -1342,7 +1348,7 @@
               Notif1Type = "Destination"
             }
 
-            createNotification(Notif1Type + ' Warning', 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif1Type,);
+            createNotification(Notif1Type + ' Warning for ' + TitleName, 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif1Type + ". " + BodyMsg,);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif1Timer)
@@ -1371,7 +1377,7 @@
               Notif2Type = "Destination"
             }
 
-            createNotification(Notif2Type + ' Warning', 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif2Type,);
+            createNotification(Notif2Type +' Warning for ' + TitleName, 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif2Type + ". " + BodyMsg,);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif2Timer)
@@ -1400,7 +1406,7 @@
               Notif3Type = "Destination"
             }
 
-            createNotification(Notif3Type + ' Warning', 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif3Type,);
+            createNotification(Notif3Type +' Warning for ' + TitleName, 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif3Type + ". " + BodyMsg,);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif3Timer)
@@ -1442,8 +1448,21 @@
     }
 
     function Usernamemessage() {
-      //document.getElementById("UserName").innerHTML
-
+      BodyMsg = "Happy Flying!"
+      TitleName = document.getElementById("UserName").innerHTML
+      if(TitleName == "Pilot"){
+        TitleName = document.getElementById("Callsign").innerHTML
+      }
+      else{
+        for (a = 0; a < usermsgs.length; a++) {
+         if (usermsgs[a].Username == TitleName) {
+           TitleName = usermsgs[a].titleName
+            BodyMsg = usermsgs[a].bodyMsg    
+            break;
+          }
+        }
+      } 
+      console.log(TitleName,BodyMsg)
     }
 
     function GetLivery(LivId) {
