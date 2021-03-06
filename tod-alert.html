@@ -618,6 +618,38 @@
       </div>
     </div>
 
+    <div class="Notif">
+      <div class="NotifL">
+        Notification 2
+      </div>
+
+      <label id="Notif2L" class="NotifLM" for="Notif2M">Minutes to TOD</label><input name="Notif2M" id="Notif2M" class="NotifIn" type="number" value="1">
+      <br>
+      <button onclick="SetNotif(2)" class="NotifBtn" ><i class="fas fa-plus-circle"></i> Add</button>
+      <button id="Notif1TypeBtn" onclick="ChangeNotif(2)" class="NotifBtn" >Switch Type</button>
+      <button onclick="ClearNotif(2)" class="NotifBtn" ><i class="fas fa-times-circle"></i> Clear</button>
+
+      <div id="Notif2S" class="NotifStatus">
+        Not Set
+      </div>
+    </div>
+
+    <div class="Notif">
+      <div class="NotifL">
+        Notification 3
+      </div>
+
+      <label id="Notif3L" class="NotifLM" for="Notif3M">Minutes to TOD</label><input name="Notif3M" id="Notif3M" class="NotifIn" type="number" value="1">
+      <br>
+      <button onclick="SetNotif(3)" class="NotifBtn" ><i class="fas fa-plus-circle"></i> Add</button>
+      <button id="Notif1TypeBtn" onclick="ChangeNotif(3)" class="NotifBtn" >Switch Type</button>
+      <button onclick="ClearNotif(3)" class="NotifBtn" ><i class="fas fa-times-circle"></i> Clear</button>
+
+      <div id="Notif3S" class="NotifStatus">
+        Not Set
+      </div>
+    </div>
+
     <br>
 
     <div class="Refresh">
@@ -1253,6 +1285,7 @@
 
     function SetNotif(NotifNum){
       console.log(NotifNum)
+      ClearNotif(NotifNum)
 
       if (Notification.permission !== "granted") {
         Notification.requestPermission(permission => {
@@ -1302,7 +1335,71 @@
         document.getElementById("NotifID"+ NotifNum).innerHTML = Notif1Timer
         document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif1Type
       } 
+
+      if(NotifNum == 2){
+        var Notif2Time = currNotifTime
+        var Notif2Type = currNotifType
+
+        var Notif2Timer = setInterval(function () {
+          
+          if (Notif2Time >= Number(document.getElementById('Timeto'+ Notif2Type).innerHTML)){
+
+            var notifmins = Number(document.getElementById('Timeto'+ Notif2Type).innerHTML)/60000
+            notifmins = notifmins.toFixed(0)
+
+            if(Notif2Type == "TOD"){
+              var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
+            }
+            else{
+              var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
+              Notif2Type = "Destination"
+            }
+
+            createNotification(Notif2Type + ' Warning', 'You are '+ notifdist +'nm and ' + notifmins + ' minutes from your ' + Notif2Type, );
+            //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
+            document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notification Sent"
+            clearInterval(Notif2Timer)
+          }
+        }, 1000)
+        document.getElementById("NotifID"+ NotifNum).innerHTML = Notif2Timer
+        document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif2Type
+      } 
+
+      if(NotifNum == 3){
+        var Notif3Time = currNotifTime
+        var Notif3Type = currNotifType
+
+        var Notif3Timer = setInterval(function () {
+          
+          if (Notif3Time >= Number(document.getElementById('Timeto'+ Notif3Type).innerHTML)){
+
+            var notifmins = Number(document.getElementById('Timeto'+ Notif3Type).innerHTML)/60000
+            notifmins = notifmins.toFixed(0)
+
+            if(Notif3Type == "TOD"){
+              var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
+            }
+            else{
+              var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
+              Notif3Type = "Destination"
+            }
+
+            createNotification(Notif3Type + ' Warning', 'You are '+ notifdist +'nm and ' + notifmins + ' minutes from your ' + Notif3Type, );
+            //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
+            document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notification Sent"
+            clearInterval(Notif3Timer)
+          }
+        }, 1000)
+        document.getElementById("NotifID"+ NotifNum).innerHTML = Notif3Timer
+        document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif3Type
+      } 
+
+
+
+
     }
+
+
 
     function ClearNotif(NotifNum){
       console.log(NotifNum)
