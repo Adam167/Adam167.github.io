@@ -72,11 +72,11 @@
         }
 
         .countdown {
-        margin:5px;
-        margin-top: 20px;
-        border-radius: 25px;
-        width: 100%;
-      }
+          margin: 5px;
+          margin-top: 20px;
+          border-radius: 25px;
+          width: 100%;
+        }
 
       }
 
@@ -464,7 +464,7 @@
         padding: 5px;
       }
 
-      .NotifStatus{
+      .NotifStatus {
         color: #E59500;
         padding: 10px;
         font-size: 18px;
@@ -485,7 +485,6 @@
       .NotifBtn:hover {
         border-color: #e59500;
       }
-
     </style>
   </head>
 
@@ -601,64 +600,69 @@
     </div>
 
     <br>
+    <div id="Notifs">
+      <div class="Notif">
+        <div class="NotifL">
+          Notification 1
+        </div>
 
-    <div class="Notif">
-      <div class="NotifL">
-        Notification 1
+        <label id="Notif1L" class="NotifLM" for="Notif1M">Minutes to TOD</label><input name="Notif1M" id="Notif1M"
+          class="NotifIn" type="number" value="1">
+        <br>
+        <button onclick="SetNotif(1)" class="NotifBtn"><i class="fas fa-plus-circle"></i> Add</button>
+        <button id="Notif1TypeBtn" onclick="ChangeNotif(1)" class="NotifBtn">Switch Type</button>
+        <button onclick="ClearNotif(1)" class="NotifBtn"><i class="fas fa-times-circle"></i> Clear</button>
+
+        <div id="Notif1S" class="NotifStatus">
+          Not Set
+        </div>
       </div>
 
-      <label id="Notif1L" class="NotifLM" for="Notif1M">Minutes to TOD</label><input name="Notif1M" id="Notif1M" class="NotifIn" type="number" value="1">
+      <div class="Notif">
+        <div class="NotifL">
+          Notification 2
+        </div>
+
+        <label id="Notif2L" class="NotifLM" for="Notif2M">Minutes to TOD</label><input name="Notif2M" id="Notif2M"
+          class="NotifIn" type="number" value="1">
+        <br>
+        <button onclick="SetNotif(2)" class="NotifBtn"><i class="fas fa-plus-circle"></i> Add</button>
+        <button id="Notif1TypeBtn" onclick="ChangeNotif(2)" class="NotifBtn">Switch Type</button>
+        <button onclick="ClearNotif(2)" class="NotifBtn"><i class="fas fa-times-circle"></i> Clear</button>
+
+        <div id="Notif2S" class="NotifStatus">
+          Not Set
+        </div>
+      </div>
+
+      <div class="Notif">
+        <div class="NotifL">
+          Notification 3
+        </div>
+
+        <label id="Notif3L" class="NotifLM" for="Notif3M">Minutes to TOD</label><input name="Notif3M" id="Notif3M"
+          class="NotifIn" type="number" value="1">
+        <br>
+        <button onclick="SetNotif(3)" class="NotifBtn"><i class="fas fa-plus-circle"></i> Add</button>
+        <button id="Notif1TypeBtn" onclick="ChangeNotif(3)" class="NotifBtn">Switch Type</button>
+        <button onclick="ClearNotif(3)" class="NotifBtn"><i class="fas fa-times-circle"></i> Clear</button>
+
+        <div id="Notif3S" class="NotifStatus">
+          Not Set
+        </div>
+      </div>
+
       <br>
-      <button onclick="SetNotif(1)" class="NotifBtn" ><i class="fas fa-plus-circle"></i> Add</button>
-      <button id="Notif1TypeBtn" onclick="ChangeNotif(1)" class="NotifBtn" >Switch Type</button>
-      <button onclick="ClearNotif(1)" class="NotifBtn" ><i class="fas fa-times-circle"></i> Clear</button>
 
-      <div id="Notif1S" class="NotifStatus">
-        Not Set
-      </div>
-    </div>
-
-    <div class="Notif">
-      <div class="NotifL">
-        Notification 2
+      <div class="Refresh">
+        <div class="RefreshL">
+          Next Refresh
+        </div>
+        <div id="RefreshTime" class="RefreshT">
+          00 : 00 : 00
+        </div>
       </div>
 
-      <label id="Notif2L" class="NotifLM" for="Notif2M">Minutes to TOD</label><input name="Notif2M" id="Notif2M" class="NotifIn" type="number" value="1">
-      <br>
-      <button onclick="SetNotif(2)" class="NotifBtn" ><i class="fas fa-plus-circle"></i> Add</button>
-      <button id="Notif1TypeBtn" onclick="ChangeNotif(2)" class="NotifBtn" >Switch Type</button>
-      <button onclick="ClearNotif(2)" class="NotifBtn" ><i class="fas fa-times-circle"></i> Clear</button>
-
-      <div id="Notif2S" class="NotifStatus">
-        Not Set
-      </div>
-    </div>
-
-    <div class="Notif">
-      <div class="NotifL">
-        Notification 3
-      </div>
-
-      <label id="Notif3L" class="NotifLM" for="Notif3M">Minutes to TOD</label><input name="Notif3M" id="Notif3M" class="NotifIn" type="number" value="1">
-      <br>
-      <button onclick="SetNotif(3)" class="NotifBtn" ><i class="fas fa-plus-circle"></i> Add</button>
-      <button id="Notif1TypeBtn" onclick="ChangeNotif(3)" class="NotifBtn" >Switch Type</button>
-      <button onclick="ClearNotif(3)" class="NotifBtn" ><i class="fas fa-times-circle"></i> Clear</button>
-
-      <div id="Notif3S" class="NotifStatus">
-        Not Set
-      </div>
-    </div>
-
-    <br>
-
-    <div class="Refresh">
-      <div class="RefreshL">
-        Next Refresh
-      </div>
-      <div id="RefreshTime" class="RefreshT">
-        00 : 00 : 00
-      </div>
     </div>
 
   </div>
@@ -695,6 +699,8 @@
 
     var TotalFPLDist = 0
 
+    var UsernameMsg
+
     // 2 Degree Slope
     var VnavSlope = 212.1826283
 
@@ -706,42 +712,42 @@
     }
 
 
-    function getServers(){
-    fetch('https://api.infiniteflight.com/public/v2/sessions' + apikey)
-      .then((response) => {
-        return response.json()
-      })
-      .then((data) => {
-        // Work with JSON data here
-        //console.log(data)
-        var result = data.result
-        //console.log(result)
+    function getServers() {
+      fetch('https://api.infiniteflight.com/public/v2/sessions' + apikey)
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          // Work with JSON data here
+          //console.log(data)
+          var result = data.result
+          //console.log(result)
 
-        var servers = result.length
-        //console.log(servers)
+          var servers = result.length
+          //console.log(servers)
 
-        var select = document.getElementById("searchedservers")
+          var select = document.getElementById("searchedservers")
 
-        for (i = 0; i < servers; i++) {
-          var serverinfo = result[i]
-          var servername = serverinfo['name']
+          for (i = 0; i < servers; i++) {
+            var serverinfo = result[i]
+            var servername = serverinfo['name']
 
-          var el = document.createElement("option");
-          el.textContent = serverinfo['name'];
-          el.value = serverinfo['id'];
-          select.appendChild(el);
+            var el = document.createElement("option");
+            el.textContent = serverinfo['name'];
+            el.value = serverinfo['id'];
+            select.appendChild(el);
 
-          if (servername == "Expert Server") {
-            var serverid = serverinfo['id']
-            document.getElementById("searchedservers").value = serverid;
+            if (servername == "Expert Server") {
+              var serverid = serverinfo['id']
+              document.getElementById("searchedservers").value = serverid;
+            }
+
           }
-
-        }
-      })
-      .catch((err) => {
-        //Do something for an error here
-        console.log("You broke something...")
-      })
+        })
+        .catch((err) => {
+          //Do something for an error here
+          console.log("You broke something...")
+        })
     }
 
     function searchflights() {
@@ -963,6 +969,13 @@
       document.getElementById("welcome").style.display = "none";
       document.getElementById("flightStatus").style.display = "block";
 
+      if ('Notification' in window) {
+        // API supported
+      } 
+      else {
+        // API not supported
+        document.getElementById("Notifs").style.display = "none";
+      }
     }
 
     function SearchBy() {
@@ -1195,7 +1208,7 @@
 
       if (hasAlt == true) {
         var t = setInterval(function () {
-         
+
           // Get today's date and time
           var TODnow = new Date().getTime();
 
@@ -1265,7 +1278,7 @@
         var Thours = String(Math.floor((Tdistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
         var Tminutes = String(Math.floor((Tdistance % (1000 * 60 * 60)) / (1000 * 60)));
         var Tseconds = String(Math.floor((Tdistance % (1000 * 60)) / 1000));
-        if (Thours.length == 1) { Thours = "0" + Thours}
+        if (Thours.length == 1) { Thours = "0" + Thours }
         if (Tminutes.length == 1) { Tminutes = "0" + Tminutes }
         if (Tseconds.length == 1) { Tseconds = "0" + Tseconds }
 
@@ -1283,116 +1296,116 @@
     }
 
 
-    function SetNotif(NotifNum){
+    function SetNotif(NotifNum) {
       console.log(NotifNum)
       ClearNotif(NotifNum)
 
       if (Notification.permission !== "granted") {
         Notification.requestPermission(permission => {
-           console.log(permission)
-            if (permission !== 'granted') {
-              alert("Browser does not support notifcations or notifcation permission was denied.")
+          console.log(permission)
+          if (permission !== 'granted') {
+            alert("Browser does not support notifcations or notifcation permission was denied.")
           }
         });
       }
-      
+
 
       var currNotifTimeM = document.getElementById('Notif' + NotifNum + 'M').value
       var currNotifTime = currNotifTimeM * 60000
 
-      if (document.getElementById('Notif'+ NotifNum + 'L').innerHTML == "Minutes to TOD") {
-       var currNotifType = "TOD" 
+      if (document.getElementById('Notif' + NotifNum + 'L').innerHTML == "Minutes to TOD") {
+        var currNotifType = "TOD"
       }
       else {
         var currNotifType = "Dest"
       }
 
-      if(NotifNum == 1){
+      if (NotifNum == 1) {
         var Notif1Time = currNotifTime
         var Notif1Type = currNotifType
 
         var Notif1Timer = setInterval(function () {
-          
-          if (Notif1Time >= Number(document.getElementById('Timeto'+ Notif1Type).innerHTML)){
 
-            var notifmins = Number(document.getElementById('Timeto'+ Notif1Type).innerHTML)/60000
+          if (Notif1Time >= Number(document.getElementById('Timeto' + Notif1Type).innerHTML)) {
+
+            var notifmins = Number(document.getElementById('Timeto' + Notif1Type).innerHTML) / 60000
             notifmins = notifmins.toFixed(0)
 
-            if(Notif1Type == "TOD"){
+            if (Notif1Type == "TOD") {
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
             }
-            else{
+            else {
               var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
               Notif1Type = "Destination"
             }
 
-            createNotification(Notif1Type + ' Warning', 'You are '+ notifdist +'nm and ' + notifmins + ' minutes from your ' + Notif1Type, );
+            createNotification(Notif1Type + ' Warning', 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif1Type,);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
-            document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notification Sent"
+            document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif1Timer)
           }
         }, 1000)
-        document.getElementById("NotifID"+ NotifNum).innerHTML = Notif1Timer
-        document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif1Type
-      } 
+        document.getElementById("NotifID" + NotifNum).innerHTML = Notif1Timer
+        document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif1Type
+      }
 
-      if(NotifNum == 2){
+      if (NotifNum == 2) {
         var Notif2Time = currNotifTime
         var Notif2Type = currNotifType
 
         var Notif2Timer = setInterval(function () {
-          
-          if (Notif2Time >= Number(document.getElementById('Timeto'+ Notif2Type).innerHTML)){
 
-            var notifmins = Number(document.getElementById('Timeto'+ Notif2Type).innerHTML)/60000
+          if (Notif2Time >= Number(document.getElementById('Timeto' + Notif2Type).innerHTML)) {
+
+            var notifmins = Number(document.getElementById('Timeto' + Notif2Type).innerHTML) / 60000
             notifmins = notifmins.toFixed(0)
 
-            if(Notif2Type == "TOD"){
+            if (Notif2Type == "TOD") {
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
             }
-            else{
+            else {
               var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
               Notif2Type = "Destination"
             }
 
-            createNotification(Notif2Type + ' Warning', 'You are '+ notifdist +'nm and ' + notifmins + ' minutes from your ' + Notif2Type, );
+            createNotification(Notif2Type + ' Warning', 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif2Type,);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
-            document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notification Sent"
+            document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif2Timer)
           }
         }, 1000)
-        document.getElementById("NotifID"+ NotifNum).innerHTML = Notif2Timer
-        document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif2Type
-      } 
+        document.getElementById("NotifID" + NotifNum).innerHTML = Notif2Timer
+        document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif2Type
+      }
 
-      if(NotifNum == 3){
+      if (NotifNum == 3) {
         var Notif3Time = currNotifTime
         var Notif3Type = currNotifType
 
         var Notif3Timer = setInterval(function () {
-          
-          if (Notif3Time >= Number(document.getElementById('Timeto'+ Notif3Type).innerHTML)){
 
-            var notifmins = Number(document.getElementById('Timeto'+ Notif3Type).innerHTML)/60000
+          if (Notif3Time >= Number(document.getElementById('Timeto' + Notif3Type).innerHTML)) {
+
+            var notifmins = Number(document.getElementById('Timeto' + Notif3Type).innerHTML) / 60000
             notifmins = notifmins.toFixed(0)
 
-            if(Notif3Type == "TOD"){
+            if (Notif3Type == "TOD") {
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
             }
-            else{
+            else {
               var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
               Notif3Type = "Destination"
             }
 
-            createNotification(Notif3Type + ' Warning', 'You are '+ notifdist +'nm and ' + notifmins + ' minutes from your ' + Notif3Type, );
+            createNotification(Notif3Type + ' Warning', 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif3Type,);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
-            document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notification Sent"
+            document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif3Timer)
           }
         }, 1000)
-        document.getElementById("NotifID"+ NotifNum).innerHTML = Notif3Timer
-        document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif3Type
-      } 
+        document.getElementById("NotifID" + NotifNum).innerHTML = Notif3Timer
+        document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Set at " + currNotifTimeM + "m to " + Notif3Type
+      }
 
 
 
@@ -1401,29 +1414,34 @@
 
 
 
-    function ClearNotif(NotifNum){
+    function ClearNotif(NotifNum) {
       console.log(NotifNum)
-      clearInterval(document.getElementById("NotifID"+ NotifNum).innerHTML)
-      document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Not Set"
+      clearInterval(document.getElementById("NotifID" + NotifNum).innerHTML)
+      document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Not Set"
     }
 
-    function ChangeNotif(NotifNum){
+    function ChangeNotif(NotifNum) {
       //console.log(NotifNum)
 
-      if (document.getElementById('Notif'+ NotifNum + 'L').innerHTML == "Minutes to TOD") {
-        document.getElementById('Notif'+ NotifNum + 'L').innerHTML = "Minutes to Dest"
+      if (document.getElementById('Notif' + NotifNum + 'L').innerHTML == "Minutes to TOD") {
+        document.getElementById('Notif' + NotifNum + 'L').innerHTML = "Minutes to Dest"
       }
       else {
-        document.getElementById('Notif'+ NotifNum + 'L').innerHTML = "Minutes to TOD"
+        document.getElementById('Notif' + NotifNum + 'L').innerHTML = "Minutes to TOD"
       }
     }
 
     function createNotification(title, text, icon) {
-        const noti = new Notification(title, {
-          body: text,
-          icon
-        });
-      }
+      const noti = new Notification(title, {
+        body: text,
+        icon
+      });
+    }
+
+    function Usernamemessage() {
+      //document.getElementById("UserName").innerHTML
+
+    }
 
     function GetLivery(LivId) {
       for (a = 0; a < aircraftIds.length; a++) {
@@ -1453,10 +1471,6 @@
       }
     }
 
-    function newfpladded() { // Could be useful after renaming
-      document.getElementById("fplDownloads").style.display = "block";
-      document.getElementById("fplInputs").style.display = "none";
-    }
 
     // returns the angle between two headings
     function AngleBetween(heading1, heading2) {
