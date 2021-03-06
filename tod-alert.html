@@ -1281,6 +1281,10 @@
         var Notif1Timer = setInterval(function () {
           
           if (Notif1Time >= Number(document.getElementById('Timeto'+ Notif1Type).innerHTML)){
+
+            var notifmins = Number(document.getElementById('Timeto'+ Notif1Type).innerHTML)/60000
+            notifmins = notifmins.toFixed(0)
+
             if(Notif1Type == "TOD"){
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
             }
@@ -1289,9 +1293,9 @@
               Notif1Type = "Destination"
             }
 
-            createNotification(Notif1Type + ' Warning', 'You are ' + notifdist +'nm from your ' + Notif1Type, );
+            createNotification(Notif1Type + ' Warning', 'You are '+ notifdist +'nm and ' + notifmins + ' minutes from your ' + Notif1Type, );
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
-            document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notifcation Sent"
+            document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif1Timer)
           }
         }, 1000)
