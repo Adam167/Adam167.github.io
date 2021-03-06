@@ -1254,6 +1254,16 @@
     function SetNotif(NotifNum){
       console.log(NotifNum)
 
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission(permission => {
+           console.log(permission)
+            if (permission !== 'granted') {
+              alert("Browser does not support notifcations or notifcation permission was denied.")
+          }
+        });
+      }
+      
+
       var currNotifTimeM = document.getElementById('Notif' + NotifNum + 'M').value
       var currNotifTime = currNotifTimeM * 60000
 
@@ -1270,9 +1280,17 @@
 
         var Notif1Timer = setInterval(function () {
           
-          if (Notif1Time > Number(document.getElementById('Timeto'+ Notif1Type).innerHTML)){
-            // Adam Send Notif here
-            alert("Your notifcation kind Sir")
+          if (Notif1Time >= Number(document.getElementById('Timeto'+ Notif1Type).innerHTML)){
+            if(Notif1Type == "TOD"){
+              var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
+            }
+            else{
+              var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
+              Notif1Type = "Destination"
+            }
+
+            createNotification(Notif1Type + ' Warning', 'You are ' + notifdist +'nm from your ' + Notif1Type, );
+            //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif'+ NotifNum + 'S').innerHTML = "Notifcation Sent"
             clearInterval(Notif1Timer)
           }
@@ -1298,6 +1316,13 @@
         document.getElementById('Notif'+ NotifNum + 'L').innerHTML = "Minutes to TOD"
       }
     }
+
+    function createNotification(title, text, icon) {
+        const noti = new Notification(title, {
+          body: text,
+          icon
+        });
+      }
 
     function GetLivery(LivId) {
       for (a = 0; a < aircraftIds.length; a++) {
