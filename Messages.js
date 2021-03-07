@@ -1,7 +1,7 @@
 var usermsgs = [
  {
    "Username": "AdamCallow",
-   "titleName": "The Real Dispatcher",
+   "titleName": "IOM delay expert",
    "bodyMsg": "You live on The Isle of Man? Where's that?",
  },
 
@@ -20,13 +20,13 @@ var usermsgs = [
   {
     "Username": "naro",
     "titleName": "Better Purdue Guy",
-    "bodyMsg": "We are sorry you have to hang out with Josh that much",
+    "bodyMsg": "Sorry you have to hang out with Josh that much",
   },
 
   {
     "Username": "Marc",
     "titleName": "That Swiss Guy",
-    "bodyMsg": "Ok now, thats enough chocolate, you can put the bar down now.",
+    "bodyMsg": "Ok, I think thats enough chocolate now. Put the bar down",
   },
 
 ]
