@@ -681,6 +681,7 @@
     <p id="NotifID1"></p>
     <p id="NotifID2"></p>
     <p id="NotifID3"></p>
+    <p id="Dest"></p>
   </div>
 
   <script type="text/javascript" src="AircraftId.js"></script>
@@ -862,6 +863,7 @@
             addDistanceToFPL()
             //console.log(fltplan)
             document.getElementById("Route").innerHTML = fltplan[0].wptId + " - " + fltplan[(fltplan.length) - 1].wptId
+            document.getElementById("Dest").innerHTML = fltplan[(fltplan.length) - 1].wptId
             getFlightLoc()
           }
           else {
@@ -1326,7 +1328,7 @@
         var currNotifType = "TOD"
       }
       else {
-        var currNotifType = "Dest"
+        var currNotifType = document.getElementById("Dest").innerHTML
       }
 
       if (NotifNum == 1) {
@@ -1342,13 +1344,14 @@
 
             if (Notif1Type == "TOD") {
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
+              var notifTo = "TOD"
             }
             else {
               var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
-              Notif1Type = "Destination"
+              var notifTo = document.getElementById("Dest").innerHTML
             }
 
-            createNotification(Notif1Type + ' Warning for ' + TitleName, 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif1Type + ". " + BodyMsg,);
+            createNotification(notifmins+ 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + "minutes." + bodyMsg);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif1Timer)
@@ -1377,7 +1380,7 @@
               Notif2Type = "Destination"
             }
 
-            createNotification(Notif2Type +' Warning for ' + TitleName, 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif2Type + ". " + BodyMsg,);
+            createNotification(notifmins+ 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + "minutes." + bodyMsg);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif2Timer)
@@ -1406,7 +1409,7 @@
               Notif3Type = "Destination"
             }
 
-            createNotification(Notif3Type +' Warning for ' + TitleName, 'You are ' + notifdist + 'nm and ' + notifmins + ' minutes from your ' + Notif3Type + ". " + BodyMsg,);
+            createNotification(notifmins+ 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + "minutes." + bodyMsg);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif3Timer)
