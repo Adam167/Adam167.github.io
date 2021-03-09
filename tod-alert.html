@@ -1374,10 +1374,11 @@
 
             if (Notif2Type == "TOD") {
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
+              var notifTo = "TOD"
             }
             else {
               var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
-              Notif2Type = "Destination"
+              var notifTo = document.getElementById("Dest").innerHTML
             }
 
             createNotification(notifmins+ 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + " minutes. " + BodyMsg);
@@ -1403,10 +1404,11 @@
 
             if (Notif3Type == "TOD") {
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
+              var notifTo = "TOD"
             }
             else {
               var notifdist = Number(document.getElementById("DestDistance").innerHTML).toFixed(1)
-              Notif3Type = "Destination"
+              var notifTo = document.getElementById("Dest").innerHTML
             }
 
             createNotification(notifmins+ 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + " minutes. " + BodyMsg);
