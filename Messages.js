@@ -37,7 +37,7 @@ var usermsgs = [
 
   {
     "Username": "Tyler_Shelton",
-    "titleName": "Tyler",
+    "titleName": "Mr ATC",
     "bodyMsg": "Possible pilot deviation. I've got a number for you to call when you land",
   },
 

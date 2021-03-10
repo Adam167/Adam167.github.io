@@ -396,11 +396,13 @@
 
       .hidden {
         display: none;
+        width: 0px;
       }
 
       .Refresh {
         display: inline-block;
         margin: 10px;
+        margin-top: 0px;
         border: 5px solid #002642;
         border-radius: 25px;
         width: 200px;
@@ -487,6 +489,77 @@
       .NotifBtn:hover {
         border-color: #e59500;
       }
+
+      #fplTableDiv {
+        text-align: center;
+      }
+
+      #fpltable {
+        border-collapse: collapse;
+        display: inline-block;
+      }
+
+      td,
+      th {
+        border: 2px solid;
+        border-color: black;
+        padding: 8px;
+      }
+
+      #fpltable tr:nth-child(even) {
+        background-color: #384147;
+      }
+
+
+      #fpltable th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: center;
+        background-color: #002642;
+        color: white;
+      }
+
+      .fplIlable {
+        font-size: 18px;
+        margin: 10px 1px 10px 5px;
+        font-weight: 700;
+      }
+
+      .fplI {
+        background-color: #48555E;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 10px 5px 10px 1px;
+        width: 90px;
+        border: 2px solid black;
+        border-radius: 5px;
+        padding: 4px;
+        color: white;
+      }
+
+      #fpltoggle {
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
+        background-color: #002642;
+        border-color: #002642;
+        display: inline-block;
+        width: 200px;
+        height: 50px;
+        margin: 10px;
+        padding: 5px;
+        border-radius: 10px;
+        text-align: center;
+      }
+
+      #fpltoggle:hover {
+        border: 2px solid #E59500;
+      }
+
+      #fplTableDiv {
+        display: none;
+      }
+
     </style>
   </head>
 
@@ -655,6 +728,7 @@
       </div>
     </div>
 
+
     <br>
 
     <div class="Refresh">
@@ -664,6 +738,27 @@
       <div id="RefreshTime" class="RefreshT">
         00 : 00 : 00
       </div>
+    </div>
+
+    <br>
+
+    <button onclick="togglefpl()" id="fpltoggle">Open FlightPlan</button>
+
+    <br>
+
+    <div id="fplTableDiv" >
+      <label id="GSl" class="fplIlable" for="GS">Groundspeed:</label><input onfocusout='VS()' onkeypress='checkkey(event)' class="fplI" id="GS" type="number" name="GS">
+      <label id="cruisel" class="fplIlable" for="cruise">Cruise:</label><input onfocusout='AltnVS()' onkeypress='checkkey(event)' class="fplI" id="cruise" type="number" name="GS">
+      <br>
+      <table id="fpltable">
+       <tr>
+          <th>Name</th>
+          <th>Distance</th>
+          <th>FPL Altitude</th>
+          <th>Estimated Alt</th>
+          <th>Estimated VS</th>
+        </tr>
+      </table>
     </div>
 
 
@@ -713,6 +808,7 @@
     var flightsInfo = [""]
     var IDlist = [""]
     var fltplan = [""]
+    var downplan = [""]
     const println = (msg) => {
       console.log(msg);
     }
@@ -847,21 +943,24 @@
               waypoint = flightplan[i]
 
               if (waypoint.children == null) {
-                extractinfo(waypoint);
+                var inSID = false
+                extractinfo(waypoint, inSID);
               }
               else {
                 var numchild = flightplan[i].children.length
                 //console.log("procedure with " + numchild)
                 for (n = 0; n < numchild; n++) {
+                  var inSID = false
+                  if (flightplan[i].type == 0) { inSID = true }
                   waypoint = flightplan[i].children[n];
-                  extractinfo(waypoint);
+                  extractinfo(waypoint, inSID);
                 }
               }
 
             }
             fltplan.shift()
             addDistanceToFPL()
-            //console.log(fltplan)
+            console.log(fltplan)
             document.getElementById("Route").innerHTML = fltplan[0].wptId + " - " + fltplan[(fltplan.length) - 1].wptId
             document.getElementById("Dest").innerHTML = fltplan[(fltplan.length) - 1].wptId
             getFlightLoc()
@@ -877,7 +976,7 @@
 
     }
 
-    function extractinfo(waypoint) {
+    function extractinfo(waypoint, inSID) {
       var curWpt = ""
       if (waypoint.children == null) {
         if (waypoint.identifier == null) {
@@ -900,9 +999,9 @@
           lon: lon,
           alt: alt,
           dist: "",
+          inSID: inSID,
         }
         fltplan.push(curFlight)
-        // newrow(r, id, lat, lon, alt) // ------ Edit to Array ------
       }
 
     }
@@ -978,11 +1077,9 @@
 
       if ('Notification' in window) {
         // API supported
-        console.log("suported")
       }
       else {
         // API not supported
-        console.log("Not suported, notifs hidden")
         document.getElementById("Notifs").style.display = "none";
       }
     }
@@ -1023,9 +1120,11 @@
               ACTrack = flightinfo.track
               ACSpeed = flightinfo.speed
               ACAlt = flightinfo.altitude
-              document.getElementById("UserName").innerHTML = flightinfo.username             
+              document.getElementById("UserName").innerHTML = flightinfo.username
               document.getElementById("Callsign").innerHTML = flightinfo.callsign
               document.getElementById("VA/VO").innerHTML = flightinfo.virtualOrganization
+              document.getElementById("GS").value = ACSpeed.toFixed(0)
+              document.getElementById("cruise").value = ACAlt.toFixed(0)
               var LivId = flightinfo.liveryId
               GetLivery(LivId)
               break;
@@ -1091,6 +1190,7 @@
       DistanceToAlt(distToNext, nextWptRow)
       Timers()
       flightStatusOpen()
+      maketable()
     }
 
     function DistanceToEnd(distToNext, nextWptRow) {
@@ -1258,7 +1358,7 @@
       document.getElementById("ETATimerID").innerHTML = x
 
       var distance = ArrivalTime - currentDate;
-      console.log(distance)
+      //console.log(distance)
       Refreshtimer = 7200000 // 2hr
       if (distance < 43200000) { //12hr
         Refreshtimer = 3600000 // 1hr
@@ -1272,7 +1372,7 @@
           }
         }
       }
-      console.log(Refreshtimer)
+      //console.log(Refreshtimer)
       var RefreshTime = new Date(currentDate.getTime() + Refreshtimer);
 
       // Update the count down every 1 second
@@ -1305,7 +1405,6 @@
       }, 1000)
     }
 
-
     function SetNotif(NotifNum) {
       console.log(NotifNum)
       ClearNotif(NotifNum)
@@ -1318,8 +1417,6 @@
           }
         });
       }
-
-
 
       var currNotifTimeM = document.getElementById('Notif' + NotifNum + 'M').value
       var currNotifTime = currNotifTimeM * 60000
@@ -1351,7 +1448,7 @@
               var notifTo = document.getElementById("Dest").innerHTML
             }
 
-            createNotification(notifmins+ 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + " minutes. " + BodyMsg);
+            createNotification(notifmins + 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + " minutes. " + BodyMsg);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif1Timer)
@@ -1372,7 +1469,7 @@
             var notifmins = Number(document.getElementById('Timeto' + Notif2Type).innerHTML) / 60000
             notifmins = notifmins.toFixed(0)
 
-            if (Notif2Type == "TOD") {
+            if (Notif1Type == "TOD") {
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
               var notifTo = "TOD"
             }
@@ -1381,7 +1478,7 @@
               var notifTo = document.getElementById("Dest").innerHTML
             }
 
-            createNotification(notifmins+ 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + " minutes. " + BodyMsg);
+            createNotification(notifmins + 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + " minutes. " + BodyMsg);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif2Timer)
@@ -1402,7 +1499,7 @@
             var notifmins = Number(document.getElementById('Timeto' + Notif3Type).innerHTML) / 60000
             notifmins = notifmins.toFixed(0)
 
-            if (Notif3Type == "TOD") {
+            if (Notif1Type == "TOD") {
               var notifdist = Number(document.getElementById("TODDistance").innerHTML).toFixed(1)
               var notifTo = "TOD"
             }
@@ -1411,7 +1508,7 @@
               var notifTo = document.getElementById("Dest").innerHTML
             }
 
-            createNotification(notifmins+ 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + " minutes. " + BodyMsg);
+            createNotification(notifmins + 'm Warning for ' + TitleName, notifdist + "nm from " + notifTo + ", arriving in " + notifmins + " minutes. " + BodyMsg);
             //alert(Notif1Type + ' Warning / You are ' + notifdist +'nm from your ' + Notif1Type)
             document.getElementById('Notif' + NotifNum + 'S').innerHTML = "Notification Sent"
             clearInterval(Notif3Timer)
@@ -1425,8 +1522,6 @@
 
 
     }
-
-
 
     function ClearNotif(NotifNum) {
       console.log(NotifNum)
@@ -1455,19 +1550,19 @@
     function Usernamemessage() {
       BodyMsg = "Happy Flying!"
       TitleName = document.getElementById("UserName").innerHTML
-      if(TitleName == "Pilot"){
+      if (TitleName == "Pilot") {
         TitleName = document.getElementById("Callsign").innerHTML
       }
-      else{
+      else {
         for (a = 0; a < usermsgs.length; a++) {
-         if (usermsgs[a].Username == TitleName) {
-           TitleName = usermsgs[a].titleName
-            BodyMsg = usermsgs[a].bodyMsg    
+          if (usermsgs[a].Username == TitleName) {
+            TitleName = usermsgs[a].titleName
+            BodyMsg = usermsgs[a].bodyMsg
             break;
           }
         }
-      } 
-      console.log(TitleName,BodyMsg)
+      }
+      //console.log(TitleName,BodyMsg)
     }
 
     function GetLivery(LivId) {
@@ -1498,6 +1593,146 @@
       }
     }
 
+    function maketable() {
+      document.getElementById("fpltable").innerHTML = ""
+      var table = "<tr><th>Name</th><th>Distance</th><th>FPL Altitude</th><th>Estimated Alt</th><th>Estimated VS</th></tr>"
+
+      for (i = 0; i < fltplan.length; i++) {
+        table += "<tr><td>"
+          + fltplan[i].wptId
+          + "</td><td>"
+          + fltplan[i].dist
+          + "</td><td contenteditable='true' onfocusout='AltnVS()' onkeypress='checkkey(event)' >"
+          + fltplan[i].alt
+          + "</td><td></td><td></td><td class='hidden'></td><td class='hidden'>"
+          + fltplan[i].inSID
+          + "</td></tr>"
+      }
+      document.getElementById("fpltable").innerHTML = table
+      AltnVS()
+    }
+
+
+    function checkkey(event) {
+      var x = event.which || event.keyCode;
+      if (x == 13) {
+        event.preventDefault()
+        event.target.blur()
+      }
+    }
+
+    function AltnVS() {
+      ClearRows()
+      //console.log("Alt n VS Called")
+      var trows = document.getElementById("fpltable").rows.length
+
+      for (r = trows - 1; r >= 2; r--) {
+        if (document.getElementById("fpltable").rows[r].cells[3].innerHTML == "") {
+          document.getElementById("fpltable").rows[r].cells[3].innerHTML = document.getElementById("fpltable").rows[r].cells[2].innerHTML.replace("<br>", "")
+        }
+        //document.getElementById("fpltable").rows[r].cells[3].innerHTML
+        if (document.getElementById("fpltable").rows[r].cells[2].innerHTML.replace("<br>", "") != "") {
+          var currAlt = Number(document.getElementById("fpltable").rows[r].cells[2].innerHTML.replace("<br>", ""))
+          prevAlt = 0
+          prevAltDist = 0
+          for (prevAltRow = r - 1; prevAltRow >= 2; prevAltRow--) {
+            prevAltDist = prevAltDist + Number(document.getElementById("fpltable").rows[(prevAltRow + 1)].cells[1].innerHTML)
+            if (document.getElementById("fpltable").rows[prevAltRow].cells[6].innerHTML == "true") {
+              prevAlt = Number(document.getElementById("cruise").value)
+              var isSID = true
+              //console.log(r,isSID,prevAlt)
+              break;
+            }
+            else{
+             if (document.getElementById("fpltable").rows[prevAltRow].cells[2].innerHTML.replace("<br>", "") != "") {
+                prevAlt = Number(document.getElementById("fpltable").rows[prevAltRow].cells[2].innerHTML)
+                var isSID = false
+                if (isNaN(prevAlt) == false) { break }
+              }
+            }
+          }
+          if (prevAlt > currAlt) {
+            if(isSID == true){
+              slope = VnavSlope
+            }
+            else{
+              var altLoss = prevAlt - currAlt
+              var slope = altLoss / prevAltDist
+              if (slope < VnavSlope) { slope = VnavSlope }
+            }
+
+            document.getElementById("fpltable").rows[r].cells[5].innerHTML = slope
+            //console.log(r,prevAltRow,prevAlt,prevAltDist,slope)
+            for (z = r - 1; z > prevAltRow; z--) {
+              var newalt = Number(document.getElementById("fpltable").rows[(z + 1)].cells[3].innerHTML) + (slope * Number(document.getElementById("fpltable").rows[(z + 1)].cells[1].innerHTML))
+              if (newalt > prevAlt) { newalt = prevAlt }
+              newalt = Number(newalt.toFixed(0))
+              //console.log(z,newalt)
+              document.getElementById("fpltable").rows[z].cells[3].innerHTML = newalt
+              document.getElementById("fpltable").rows[z].cells[5].innerHTML = slope
+              if (newalt == Number(document.getElementById("cruise").value)){break}
+            }
+          }
+        }
+      }
+      VS()
+    }
+
+    function VS() {
+      var trows = document.getElementById("fpltable").rows.length
+
+      for (r = 2; r < trows - 1; r++) {
+        if (document.getElementById("fpltable").rows[r].cells[3].innerHTML != "") {
+          if (document.getElementById("fpltable").rows[r - 1].cells[3].innerHTML != "") {
+            if (document.getElementById("fpltable").rows[r].cells[3].innerHTML == document.getElementById("fpltable").rows[r - 1].cells[3].innerHTML) {
+              document.getElementById("fpltable").rows[r].cells[4].innerHTML = 0
+            }
+            else {
+              if (document.getElementById("fpltable").rows[r].cells[5].innerHTML != "") {
+                var VSDist = -1
+                var altdiff = Number(document.getElementById("fpltable").rows[r].cells[5].innerHTML)
+              }
+              else {
+                var VSDist = Number(document.getElementById("fpltable").rows[r].cells[1].innerHTML)
+                var altdiff = Number(document.getElementById("fpltable").rows[r].cells[3].innerHTML) - Number(document.getElementById("fpltable").rows[r - 1].cells[3].innerHTML)
+              }
+
+              var GS = document.getElementById("GS").value
+              var VS = altdiff / ((VSDist / GS) * 60)
+
+              if (isNaN(VS) == false) {
+                document.getElementById("fpltable").rows[r].cells[4].innerHTML = VS.toFixed(0)
+              }
+              else {
+                document.getElementById("fpltable").rows[r].cells[4].innerHTML = 0
+              }
+            }
+          }
+        }
+      }
+    }
+
+    function ClearRows() {
+      var trows = document.getElementById("fpltable").rows.length
+
+      for(r=1; r < trows - 1; r++){
+        document.getElementById("fpltable").rows[r].cells[3].innerHTML = ""
+        document.getElementById("fpltable").rows[r].cells[4].innerHTML = ""
+        document.getElementById("fpltable").rows[r].cells[5].innerHTML = ""
+      }
+
+    }
+
+    function togglefpl(){ //document.getElementById("fpltoggle")
+    if(document.getElementById("fpltoggle").innerHTML == "Open FlightPlan"){
+      document.getElementById("fplTableDiv").style.display = "block"
+      document.getElementById("fpltoggle").innerHTML = "Close FlightPlan"
+    }
+    else{
+      document.getElementById("fplTableDiv").style.display = "none"
+      document.getElementById("fpltoggle").innerHTML = "Open FlightPlan"
+    }
+    }
 
     // returns the angle between two headings
     function AngleBetween(heading1, heading2) {
