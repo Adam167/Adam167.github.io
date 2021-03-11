@@ -5,6 +5,7 @@
   <head>
     <title>IF Flightplan Tools | Flight Status</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
 
     <link href="all.css" rel="stylesheet">
     <style>
@@ -1182,6 +1183,8 @@
             distToNext = distToFix.toFixed(2)
             nextWptID = fltplan[x].wptId
             nextWptRow = x
+            console.log(nextWptID)
+            break;
           }
         }
       }
@@ -1767,21 +1770,31 @@
     }
 
     function DistHeading(latfrom, lonfrom, latto, lonto) {
-      var lonMult = LonMultiplier((latfrom + latto) / 2);
-      var dy = (latto - latfrom) * 60;
-      var dx = ((lonto - lonfrom) / lonMult) * 60;
 
-      var dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-      if (dx == 0)
-        dx = .000001;
-      var dyx = dy / dx;
-      var angleRadians = Math.atan(dyx);
-      var angleDegrees = angleRadians * 180 / Math.PI;
-      var heading = FixHeading(90 - angleDegrees);
-      if (dx < 0)
-        heading = 270 - angleDegrees;
+      const R = 6371e3; // metres
+      const φ1 = latfrom * Math.PI/180; // φ, λ in radians
+      const φ2 = latto * Math.PI/180;
+      const Δφ = (latto-latfrom) * Math.PI/180;
+      const Δλ = (lonto-lonfrom) * Math.PI/180;
+      const λ1 = lonfrom * Math.PI/180;
+      const λ2 = lonto * Math.PI/180;
+
+      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+          Math.cos(φ1) * Math.cos(φ2) *
+          Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+      const d = R * c; // in metres
+      var dist = d / 1852 // in NM
+
+      const y = Math.sin(λ2-λ1) * Math.cos(φ2);
+      const x = Math.cos(φ1)*Math.sin(φ2) -
+          Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1);
+      const θ = Math.atan2(y, x);
+      var heading = (θ*180/Math.PI + 360) % 360; // in degrees
 
       return [dist, heading];
+
     }
 
 
