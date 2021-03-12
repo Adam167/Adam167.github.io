@@ -592,7 +592,7 @@
       </select><br>
 
 
-      <label id="searchl" for="search">Username:</label><input id="search" type="text" name="search">
+      <label id="searchl" for="search">Username:</label><input id="search" type="text" name="search" onkeypress='checkkeysearch(event)'>
       <button class="SearchBtn" id="SearchBy" onclick="SearchBy()">Search by Callsign</button>
       <button class="SearchBtn" id="startSearch" onclick="searchflights()"><i class="fas fa-search"></i> Search</button>
 
@@ -1153,28 +1153,30 @@
 
 
     function nextwpt() {
-      var distToNext = 13000
+      var distToNext = 25000
       var lat0 = Number(ACLat)
       var lon0 = Number(ACLon)
-      //console.log(ACTrack)
       var nextWptID = "Not Found"
       var nextWptRow = 0
 
       for (x = 1; x < fltplan.length; x++) {
         var lat1 = Number(fltplan[x].lat)
         var lon1 = Number(fltplan[x].lon)
+        //console.log(ACTrack,lat0,lon0,lat1,lon1)
         dh = DistHeading(lat0, lon0, lat1, lon1);
         var headingToFix = dh[1];
         var distToFix = dh[0];
-        //console.log(distToFix + "@" + headingToFix)
 
         var headingdiff = ACTrack - headingToFix
         headingdiff = Math.abs(headingdiff)
+        //console.log(headingdiff)
         if (headingdiff > 180) {
-          headingdiff = ACTrack + headingToFix
-          if (headingdiff > 180) {
-            headingdiff = Math.abs(headingdiff - 360)
-          }
+          headingdiff = 360 - headingdiff
+          //headingdiff = ACTrack + headingToFix
+          //if (headingdiff > 180) {
+          //  headingdiff = Math.abs(headingdiff - 360)
+          //  console.log(headingdiff)
+          //}
         }
         // Heading diff now final
         //console.log(distToFix + "@" + headingToFix, headingdiff, fltplan[x].wptId)
@@ -1183,7 +1185,7 @@
             distToNext = distToFix.toFixed(2)
             nextWptID = fltplan[x].wptId
             nextWptRow = x
-            console.log(nextWptID)
+            //console.log(nextWptID)
             break;
           }
         }
@@ -1624,6 +1626,16 @@
       }
     }
 
+    function checkkeysearch(event) {
+      var x = event.which || event.keyCode;
+      if (x == 13) {
+        event.preventDefault()
+        event.target.blur()
+        searchflights()
+      }
+    }
+
+
     function AltnVS() {
       ClearRows()
       //console.log("Alt n VS Called")
@@ -1792,7 +1804,7 @@
           Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1);
       const θ = Math.atan2(y, x);
       var heading = (θ*180/Math.PI + 360) % 360; // in degrees
-
+      //console.log(heading)
       return [dist, heading];
 
     }
