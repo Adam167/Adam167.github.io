@@ -10,8 +10,90 @@
   <body>
     <i class="fas fa-upload"></i>
     <button onclick="askForApproval()" id="enable">Enable notifications</button>
-    15 02 2021 2316
+    12 03 2021 1537
+    <p id="demo"></p>
+
+
+
+    <script type="text/javascript" src="AircraftId.js"></script>
     <script>
+
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').then(function(registration) {
+      // Registration was successful
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }, function(err) {
+      // registration failed :(
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
+
+ //console.log(aircraftIds.length)
+ //console.log(aircraftIds[0].LiveryId)
+
+var hoursToAdd=0.001;
+var currentDate = new Date();
+var futureDate = new Date(currentDate.getTime() +hoursToAdd*3600000);
+console.log(futureDate.getHours(),futureDate.getMinutes(),futureDate.getSeconds())
+
+function WipeTable(){
+  document.getElementById("fpltable").innerHTML = ""
+  console.log("Wiped")
+}
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+// Get today's date and time
+var now = new Date().getTime();
+  
+// Find the distance between now and the count down date
+var distance = futureDate - now;
+  
+// Time calculations for days, hours, minutes and seconds
+var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+// Output the result in an element with id="demo"
+document.getElementById("demo").innerHTML = days + "d " + hours + "h "
++ minutes + "m " + seconds + "s ";
+  
+// If the count down is over, write some text 
+if (distance < 0) {
+  clearInterval(x);
+  document.getElementById("demo").innerHTML = "DESCEND";
+}
+}, 1000);
+
+function ETACountdown(){
+// Get today's date and time
+var now = new Date().getTime();
+  
+// Find the distance between now and the count down date
+var distance = futureDate - now;
+  
+// Time calculations for days, hours, minutes and seconds
+var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+// Output the result in an element with id="demo"
+document.getElementById("demo").innerHTML = days + "d " + hours + "h "
++ minutes + "m " + seconds + "s ";
+  
+// If the count down is over, write some text 
+if (distance < 0) {
+  clearInterval(x);
+  document.getElementById("demo").innerHTML = "EXPIRED";
+}
+}
+
 
 
 
