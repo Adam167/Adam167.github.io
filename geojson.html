@@ -1,0 +1,255 @@
+<html>
+
+<head>
+  <title>KML to GeoJson</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Helvetica, sans-serif;
+      background-color: #1A1D21;
+      color: white;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    .header {
+      overflow: hidden;
+      background-color: #002642;
+      padding: 20px 10px;
+      border-bottom: 5px solid;
+      border-bottom-color: #E59500;
+      border-radius: 20px;
+    }
+
+    .header a {
+      float: left;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      text-decoration: none;
+      font-size: 18px;
+      line-height: 25px;
+      border-radius: 4px;
+      height: 50px;
+    }
+
+    .header a.logo {
+      font-size: 35px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .header a:hover {
+      background-color: #002642;
+      border-bottom: 5px solid;
+      border-bottom-color: #E59500;
+    }
+
+    .header a.active {
+      background-color: #1A1D21;
+      color: white;
+    }
+
+    .header-right {
+      float: right;
+    }
+
+    @media screen and (max-width: 500px) {
+      .header a {
+        float: none;
+        display: block;
+        text-align: left;
+      }
+
+      .header-right {
+        float: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <a href="#default" class="logo">IF Flightplan Tools</a>
+    <div class="header-right">
+      <a href="index.html">Home</a>
+      <a href="editor">FPL Editor</a>
+      <a class="active" href="kml">KML to FPL</a>
+      <a href="tod-alert">Flight Status</a>
+    </div>
+  </div>
+
+  <div style="padding-left:20px">
+    <h1>KML to GEOJSON Converter</h1>
+
+    <input type="file" id="Jsonfile">
+
+    <p><label for="filename">Pick a Filename:</label> <input type="text" name="filename" id=filename value="ICAO">.geojson
+    </p>
+    <label for="name">Building name:</label><input type="text" id="name" value = "KML Building">
+    <label for="height">Building height:</label><input type="text" id="height" value = "10">
+    <label for="ele">Elevation (meters):</label><input type="number" id="ele" value = 78.3336>
+    <p> Then upload your KML file here</p>
+    <input type="file" id="kmlfile">
+    <p> Or paste KML Co-ords Below and hit Go!</p>
+    <textarea id="input" rows="10" cols="80"></textarea>
+    <p><button onclick="kml()">Add KML</button></p>
+    <p><button onclick="downloadgeojson()">Download GeoJSON</button></p>
+  </div>
+  <script>
+
+    var itemjson = ""
+    var features = []
+    var kmlsadded = 0
+    var inputJson
+
+    function resetItemJsonBuilding() {
+      itemjson = '{ "type": "Feature","geometry": { "type": "LineString", "coordinates":null },"properties": { "height": "5", "ele": 78.3336,"name": "Logo right","infiniteflight": {"Facade": "Hangar 04","FacadeAssignments": null, "RoofOrientation": 52.9314728,"AnimationStates": null,"ObjectType": 0,"Path": null,"ModelRefName": null,"RoofDepth": 0.001}}}'
+      itemjson = JSON.parse(itemjson)
+      //console.log(itemjson)
+      //console.log(itemjson.geometry.coordinates)
+    }
+
+    resetItemJsonBuilding()
+
+    document.getElementById("kmlfile").addEventListener('change', readFileAsString)
+
+    document.getElementById("Jsonfile").addEventListener('change', readJsonAsString)
+
+    function readJsonAsString() {
+      var files = this.files;
+      var filename = files[0].name
+      var namesplit = filename.split(".")
+      filename = namesplit[0]
+      document.getElementById("filename").value = filename
+      if (files.length === 0) {
+        console.log('No file is selected');
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function (event) {
+        
+        //console.log('File content:', event.target.result);
+        var n = event.target.result;
+        inputJson = JSON.parse(n)
+        //console.log(inputJson)
+        features = inputJson.features
+        console.log(features)
+      }
+      reader.readAsText(files[0]);
+    }
+
+
+    function readFileAsString() {
+      var files = this.files;
+      if (files.length === 0) {
+        console.log('No file is selected');
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function (event) {
+        //console.log('File content:', event.target.result);
+        var n = event.target.result;
+        //console.log(n);
+        var parser, xmlDoc;
+        parser = new DOMParser();
+        xmlDoc = parser.parseFromString(n, "text/xml");
+        str = xmlDoc.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue;
+        console.log(str)
+        kml(str)
+      }
+      reader.readAsText(files[0]);
+    }
+
+    function kmlFromBox() {
+      var str = document.getElementById("input").value;
+      kml(str)
+    }
+
+
+    function kml() {
+      resetItemJsonBuilding()
+      var height = document.getElementById("height").value;
+      var ele = document.getElementById("ele").value;
+      var name = document.getElementById("name").value;
+      //console.log(str)
+      var str_array = str.split(" ");
+      var output = ""
+
+      for (var i = 0; i < str_array.length; i++) {
+        waypoint = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        //alert(waypoint);
+
+        var lat
+        var lon
+
+        var waypoint_array = waypoint.split(",")
+
+        for (var x = 0; x < 3; x++) {
+          if (x == 0) { lon = waypoint_array[x] }
+          if (x == 1) { lat = waypoint_array[x] }
+        }
+        if (lat != null) {
+          if (lon != null) {
+            if (i == 0) {
+              loopout = "[" + lon + "," + lat + "]"
+            }
+            else {
+              loopout = ",[" + lon + "," + lat + "]"
+            }
+            output += loopout
+          }
+        }
+      }
+      //console.log(output)
+      var jsonout = JSON.parse("[" + output + "]")
+      //console.log(jsonout)
+      itemjson.geometry.coordinates = jsonout
+      itemjson.properties.ele = Number(ele)
+      itemjson.properties.height = String(height)
+      itemjson.properties.name = String(name)
+      //console.log(itemjson)
+      features.push(itemjson)
+      console.log(features)
+      kmlsadded = kmlsadded + 1
+      alert("KML added, total KML's added:" + kmlsadded)
+    }
+
+
+
+    function download(filename,finaljsonout) {
+
+      var element = document.createElement('a');
+
+      element.setAttribute('href', 'data:geojson/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(finaljsonout)));
+
+      element.setAttribute('download', filename);
+      element.style.display = 'none';
+
+      document.body.appendChild(element);
+      element.click();
+
+      document.body.removeChild(element);
+
+    }
+
+    function downloadgeojson(){
+      var finaljsonout = inputJson
+      finaljsonout.features = features
+      console.log(finaljsonout)
+      var filename = document.getElementById("filename").value + ".geojson"
+      // Start file download.
+
+      download(filename, finaljsonout);
+    }
+
+  </script>
+</body>
+
+</html>
