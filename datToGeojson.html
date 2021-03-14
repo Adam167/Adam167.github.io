@@ -1,0 +1,379 @@
+<html>
+
+<head>
+  <title>KML to GeoJson</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Helvetica, sans-serif;
+      background-color: #1A1D21;
+      color: white;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    .header {
+      overflow: hidden;
+      background-color: #002642;
+      padding: 20px 10px;
+      border-bottom: 5px solid;
+      border-bottom-color: #E59500;
+      border-radius: 20px;
+    }
+
+    .header a {
+      float: left;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      text-decoration: none;
+      font-size: 18px;
+      line-height: 25px;
+      border-radius: 4px;
+      height: 50px;
+    }
+
+    .header a.logo {
+      font-size: 35px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .header a:hover {
+      background-color: #002642;
+      border-bottom: 5px solid;
+      border-bottom-color: #E59500;
+    }
+
+    .header a.active {
+      background-color: #1A1D21;
+      color: white;
+    }
+
+    .header-right {
+      float: right;
+    }
+
+    @media screen and (max-width: 500px) {
+      .header a {
+        float: none;
+        display: block;
+        text-align: left;
+      }
+
+      .header-right {
+        float: none;
+      }
+    }
+
+    h3 {
+      color: #E59500;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <a href="#default" class="logo">IF Flightplan Tools</a>
+    <div class="header-right">
+      <a href="index.html">Home</a>
+      <a href="editor">FPL Editor</a>
+      <a class="active" href="kml">KML to FPL</a>
+      <a href="tod-alert">Flight Status</a>
+    </div>
+  </div>
+
+  <div style="padding-left:20px">
+    <h1>apt.dat to GEOJSON Converter</h1>
+    <h3>DAT Converter 5000</h3>
+
+    <p>Welcome to the Dat converter 5000, to opertate this please follow the very simple steps below.</p>
+
+    <p>Step 1 : Upload your existing .geojson file.</p>
+    <input type="file" id="Jsonfile">
+
+
+
+    <p>Step 2: <label for="filename">Pick a Filename for final geojson:</label> <input type="text" name="filename"
+        id=filename value="ICAO">.geojson
+    </p>
+    <p>Step 3: Configure your options, tick what you want added.</p>
+    <label for="buildings">Buildings</label><input type="checkbox" id="buildings" name="buildings" checked=true>
+    <label for="windsocks">Windsocks</label><input type="checkbox" id="windsocks" name="windsocks" checked=true>
+    <label for="beacon">Beacon</label><input type="checkbox" id="beacon" name="beacon" checked=true>
+    <label for="tower">Tower</label><input type="checkbox" id="tower" name="tower" checked=true><br>
+    <label for="height">Building height:</label><input type="text" id="height" value="10">
+    <p> Step 4: Upload your apt.dat file below</p>
+    <input type="file" id="datfile">
+
+    <p>Step 5: Download your updated Goejson file and enjoy! (If it worked)</p>
+    <p><button onclick="downloadgeojson()">Download GeoJSON</button></p>
+  </div>
+  <script>
+
+    var itemjson = ""
+    var features = []
+    var buildingsadded = 0
+    var windsocksadded = 0
+    var beaconsadded = 0
+    var towersadded = 0
+    var inputJson = JSON.parse('{"type": "FeatureCollection", "features": [] }')
+    var ele
+
+    function resetItemJsonBuilding() {
+      itemjson = '{ "type": "Feature","geometry": { "type": "LineString", "coordinates":null },"properties": { "height": "5", "ele": 78.3336,"name": "Logo right","infiniteflight": {"Facade": "Hangar 04","FacadeAssignments": null, "RoofOrientation": 52.9314728,"AnimationStates": null,"ObjectType": 0,"Path": null,"ModelRefName": null,"RoofDepth": 0.001}}}'
+      itemjson = JSON.parse(itemjson)
+      //console.log(itemjson)
+      //console.log(itemjson.geometry.coordinates)
+    }
+
+    function resetItemJsonWindsock() {
+      itemjson = '{"type":"Feature","geometry":{"type":"Point","coordinates":""},"properties":{"bank-file":"windsock","orientation":0,"name":"new Windsock","ele":15.5448,"scale":1,"infiniteflight":{"Facade":null,"FacadeAssignments":null,"RoofOrientation":0,"AnimationStates":[{"AnimationIndex":0,"Percentage":0},{"AnimationIndex":1,"Percentage":0}],"ObjectType":1,"Path":null,"ModelRefName":"windsock","RoofDepth":1}}}'
+      itemjson = JSON.parse(itemjson)
+    }
+
+    function resetItemJsonBeacon() {
+      itemjson = '{"type":"Feature","geometry":{"type":"Point","coordinates":""},"properties":{"bank-file":"beacon","orientation":0,"name":"new Beacon","ele":15.5448,"scale":1,"infiniteflight":{"Facade":null,"FacadeAssignments":null,"RoofOrientation":0,"AnimationStates":[{"AnimationIndex":0,"Percentage":0},{"AnimationIndex":1,"Percentage":0}],"ObjectType":1,"Path":null,"ModelRefName":"beacon","RoofDepth":1}}}'
+      itemjson = JSON.parse(itemjson)
+    }
+
+    function resetItemJsonTower(tower) {
+      //console.log(tower)
+      itemjson = '{"type":"Feature","geometry":{"type":"Point","coordinates":""},"properties":{"bank-file":"'+ tower +'","orientation":130.60878,"name":"new ATC Tower - Small","ele":12.5,"scale":1.0,"infiniteflight":{"Facade":null,"FacadeAssignments":null,"RoofOrientation":0.0,"AnimationStates":null,"ObjectType":1,"Path":null,"ModelRefName":"'+ tower +'","RoofDepth":1.0}}}'
+      itemjson = JSON.parse(itemjson)
+    }
+
+    //beacon
+
+    //resetItemJsonBuilding()
+
+    document.getElementById("datfile").addEventListener('change', readFileAsString)
+
+    document.getElementById("Jsonfile").addEventListener('change', readJsonAsString)
+
+    function readJsonAsString() {
+      var files = this.files;
+      var filename = files[0].name
+      var namesplit = filename.split(".")
+      filename = namesplit[0]
+      document.getElementById("filename").value = filename
+      if (files.length === 0) {
+        console.log('No file is selected');
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function (event) {
+
+        //console.log('File content:', event.target.result);
+        var n = event.target.result;
+        //console.log(n)
+        inputJson = JSON.parse(n)
+        //console.log(inputJson)
+        features = inputJson.features
+        //console.log(features)
+      }
+      reader.readAsText(files[0]);
+    }
+
+
+    function readFileAsString() {
+      var files = this.files;
+      if (files.length === 0) {
+        console.log('No file is selected');
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function (event) {
+        //console.log('File content:', event.target.result);
+        var n = event.target.result;
+        //console.log(n);
+        str = n.split("\n")
+        //console.log(str)
+        //console.log(str.length)
+        dat(str)
+      }
+      reader.readAsText(files[0]);
+    }
+
+
+    function dat(str) {
+      var lat
+      var lon
+      var height = document.getElementById("height").value;
+
+      for (r = 0; r < str.length; r++) {
+        var row_array = str[r].split(" ");
+
+        if (row_array[0] == "1") { //airport info
+          for (x = 1; x < row_array.length; x++) {
+            if (row_array[x] != "") { break }
+          }
+          var ele = (Number(row_array[x]) / 3.28084).toFixed(4)
+          var ICAO = row_array[x + 3]
+          var name = ""
+          for (n = x + 4; n < row_array.length; n++) {
+            name += row_array[n]
+            if (n != row_array.length - 1) { name += " " }
+          }
+          ele = Number(prompt("Aiport Elevation (Default is from apt.dat)", ele))
+          //console.log(ele, ICAO, name)
+          if (document.getElementById("filename").value == "ICAO") { document.getElementById("filename").value = ICAO }
+        }
+
+        if (row_array[0] == "110") { //taxiway header
+          if (row_array[1] == "15") { //transparent taxiway
+            if (document.getElementById("buildings").checked == true) {
+              resetItemJsonBuilding()
+
+              var name = ""
+
+              for (n = 4; n < row_array.length; n++) {
+                name += row_array[n]
+                if (n != row_array.length - 1) { name += " " }
+              }
+
+              var lastlat = ""
+              var lastlon = ""
+              var output = ""
+              for (Tr = r + 1; Tr < str.length; Tr++) {
+                var taxi_row = str[Tr].split(" ");
+                if (lastlat != Number(taxi_row[2]) && lastlon != Number(taxi_row[3])) {
+                  lastlat = Number(taxi_row[2])
+                  lastlon = Number(taxi_row[3])
+                  lat = Number(taxi_row[2])
+                  lon = Number(taxi_row[3])
+                }
+
+                if (taxi_row[0] == 113 || taxi_row[0] == 114) {
+                  loopout = "[" + lon + "," + lat + "]"
+                  output += loopout
+                  var jsonout = JSON.parse("[" + output + "]")
+                  itemjson.geometry.coordinates = jsonout
+                  itemjson.properties.ele = Number(ele)
+                  itemjson.properties.height = String(height)
+                  itemjson.properties.name = String(name)
+                  features.push(itemjson)
+                  buildingsadded = buildingsadded + 1
+                  break;
+                }
+                else {
+                  loopout = "[" + lon + "," + lat + "],"
+                  output += loopout
+                }
+              }
+            }
+          }
+        }
+
+        if (row_array[0] == "14") { //Tower viewpoint
+          if (document.getElementById("tower").checked == true) {
+            // bank-file and ModelRefName
+
+            // small - atc_tower_small
+            // med - atc_tower_medium
+            // LHR - atc_tower_heathrow
+            // small 14m | 27 | medium 39m | 59.5 | LHR 80m
+            if (document.getElementById("beacon").checked == true) {
+              var output = "[" + Number(row_array[2]) + "," + Number(row_array[3]) + "]"
+              var towerheight = (row_array[5] / 3.28084).toFixed(1)
+              //console.log(towerheight)
+              if (towerheight < 20) {
+                var tower = "atc_tower_small"
+              }
+              else if (towerheight < 70) {
+                var tower = "atc_tower_medium"
+              }
+              else {
+                var tower = "atc_tower_heathrow"
+              }
+              resetItemJsonTower(tower)
+
+              var jsonout = JSON.parse(output)
+              itemjson.geometry.coordinates = jsonout
+              itemjson.properties.ele = Number(ele)
+              itemjson.properties.name = "WED Tower " + Number(towerheight).toFixed(0) + "m high"
+              //itemjson.properties.bank-file = tower
+              //itemjson.properties.infiniteflight.ModelRefName = tower
+              features.push(itemjson)
+              towersadded = towersadded + 1
+            }
+          }
+        }
+
+
+        if (row_array[0] == "18") { //beacon
+          if (document.getElementById("beacon").checked == true) {
+            resetItemJsonBeacon()
+            var output = "[" + Number(row_array[2]) + "," + Number(row_array[3]) + "]"
+            var jsonout = JSON.parse(output)
+            itemjson.geometry.coordinates = jsonout
+            itemjson.properties.ele = Number(ele)
+            itemjson.properties.name = "WED Beacon"
+            features.push(itemjson)
+            beaconsadded = beaconsadded + 1
+          }
+        }
+
+        if (row_array[0] == "19") { //windsock
+          if (document.getElementById("windsocks").checked == true) {
+            resetItemJsonWindsock()
+            //var ele = document.getElementById("ele").value;
+            var output = "[" + Number(row_array[2]) + "," + Number(row_array[3]) + "]"
+            var jsonout = JSON.parse(output)
+            itemjson.geometry.coordinates = jsonout
+            itemjson.properties.ele = Number(ele)
+            itemjson.properties.name = "WED Windsock"
+            features.push(itemjson)
+            windsocksadded = windsocksadded + 1
+          }
+        }
+      }
+
+      //console.log(features)
+      var alertmsg = "New Object Total :" + features.length + "\n"
+      if (document.getElementById("buildings").checked == true) { alertmsg += "Buildings found and added :" + buildingsadded + "\n" }
+      if (document.getElementById("windsocks").checked == true) { alertmsg += "Windsocks found and added :" + windsocksadded + "\n" }
+      if (document.getElementById("beacon").checked == true) { alertmsg += "Beacons found and added :" + beaconsadded + "\n" }
+      if (document.getElementById("tower").checked == true) { alertmsg += "Towers found and added :" + towersadded + "\n" }
+      alertmsg += "Thank you for using the DAT Converter 5000"
+      alert(alertmsg)
+    }
+
+
+
+    function download(filename, finaljsonout) {
+
+      var element = document.createElement('a');
+
+      element.setAttribute('href', 'data:geojson/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(finaljsonout)));
+
+      element.setAttribute('download', filename);
+      element.style.display = 'none';
+
+      document.body.appendChild(element);
+      element.click();
+
+      document.body.removeChild(element);
+
+    }
+
+    function downloadgeojson() {
+      finaljsonout = inputJson
+      finaljsonout.features = features
+      console.log(finaljsonout)
+      var filename = document.getElementById("filename").value + ".geojson"
+      // Start file download.
+
+      download(filename, finaljsonout);
+    }
+
+  </script>
+</body>
+
+</html>
