@@ -105,7 +105,7 @@
     <label for="buildings">Buildings</label><input type="checkbox" id="buildings" name="buildings" checked=true>
     <label for="windsocks">Windsocks</label><input type="checkbox" id="windsocks" name="windsocks" checked=true>
     <label for="beacon">Beacon</label><input type="checkbox" id="beacon" name="beacon" checked=true>
-    <label for="tower">Tower</label><input type="checkbox" id="tower" name="tower" checked=true><br>
+    <label for="tower">Tower</label><input type="checkbox" id="tower" name="tower" checked=true>
     <label for="height">Building height:</label><input type="text" id="height" value="10">
     <p> Step 4: Upload your apt.dat file below</p>
     <input type="file" id="datfile">
@@ -143,7 +143,7 @@
 
     function resetItemJsonTower(tower) {
       //console.log(tower)
-      itemjson = '{"type":"Feature","geometry":{"type":"Point","coordinates":""},"properties":{"bank-file":"'+ tower +'","orientation":130.60878,"name":"new ATC Tower - Small","ele":12.5,"scale":1.0,"infiniteflight":{"Facade":null,"FacadeAssignments":null,"RoofOrientation":0.0,"AnimationStates":null,"ObjectType":1,"Path":null,"ModelRefName":"'+ tower +'","RoofDepth":1.0}}}'
+      itemjson = '{"type":"Feature","geometry":{"type":"Point","coordinates":""},"properties":{"bank-file":"' + tower + '","orientation":130.60878,"name":"new ATC Tower - Small","ele":12.5,"scale":1.0,"infiniteflight":{"Facade":null,"FacadeAssignments":null,"RoofOrientation":0.0,"AnimationStates":null,"ObjectType":1,"Path":null,"ModelRefName":"' + tower + '","RoofDepth":1.0}}}'
       itemjson = JSON.parse(itemjson)
     }
 
@@ -238,22 +238,17 @@
                 if (n != row_array.length - 1) { name += " " }
               }
 
-              var lastlat = ""
-              var lastlon = ""
               var output = ""
               for (Tr = r + 1; Tr < str.length; Tr++) {
                 var taxi_row = str[Tr].split(" ");
-                if (lastlat != Number(taxi_row[2]) && lastlon != Number(taxi_row[3])) {
-                  lastlat = Number(taxi_row[2])
-                  lastlon = Number(taxi_row[3])
-                  lat = Number(taxi_row[2])
-                  lon = Number(taxi_row[3])
-                }
+                lat = Number(taxi_row[2])
+                lon = Number(taxi_row[3])
 
                 if (taxi_row[0] == 113 || taxi_row[0] == 114) {
                   loopout = "[" + lon + "," + lat + "]"
                   output += loopout
                   var jsonout = JSON.parse("[" + output + "]")
+                  console.log(jsonout)
                   itemjson.geometry.coordinates = jsonout
                   itemjson.properties.ele = Number(ele)
                   itemjson.properties.height = String(height)
@@ -372,6 +367,7 @@
 
       download(filename, finaljsonout);
     }
+
 
   </script>
 </body>
