@@ -248,7 +248,6 @@
                   loopout = "[" + lon + "," + lat + "]"
                   output += loopout
                   var jsonout = JSON.parse("[" + output + "]")
-                  console.log(jsonout)
                   itemjson.geometry.coordinates = jsonout
                   itemjson.properties.ele = Number(ele)
                   itemjson.properties.height = String(height)
