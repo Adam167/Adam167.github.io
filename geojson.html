@@ -68,6 +68,10 @@
         float: none;
       }
     }
+
+    h3 {
+      color: #E59500;
+    }
   </style>
 </head>
 
@@ -86,19 +90,29 @@
   <div style="padding-left:20px">
     <h1>KML to GEOJSON Converter</h1>
 
+    <h3>KML Converter 3000</h3>
+
+    <p>Welcome to the KML Converter 3000, to opertate this please follow the very simple steps below.</p>
+
+    <p>Step 1 : Upload your existing .geojson file.</p>
     <input type="file" id="Jsonfile">
 
-    <p><label for="filename">Pick a Filename:</label> <input type="text" name="filename" id=filename value="ICAO">.geojson
+    <p>Step 2 :<label for="filename">Pick a Filename for final geojson:</label> <input type="text" name="filename" id=filename
+        value="ICAO">.geojson
     </p>
-    <label for="name">Building name:</label><input type="text" id="name" value = "KML Building">
-    <label for="height">Building height:</label><input type="text" id="height" value = "10">
-    <label for="ele">Elevation (meters):</label><input type="number" id="ele" value = 78.3336>
-    <p> Then upload your KML file here</p>
-    <input type="file" id="kmlfile">
-    <p> Or paste KML Co-ords Below and hit Go!</p>
+    <p>Step 3: Configure your options, tick what you want added.</p>
+    <label for="name">Building name:</label><input type="text" id="name" value="KML Building">
+    <label for="height">Building height:</label><input type="text" id="height" value="10">
+    <label for="ele">Elevation (meters):</label><input type="number" id="ele" value=78.3336>
+    <p> Step 4: Upload your KML file or multiple KML files below</p>
+    <input type="file" id="kmlfile" multiple="">
+    <p> Or paste KML Co-ords Below and hit "Ass KML"</p>
     <textarea id="input" rows="10" cols="80"></textarea>
     <p><button onclick="kml()">Add KML</button></p>
+    <p> Step 5: Once you have added all you want, download the final GeoJSON</p>
+    
     <p><button onclick="downloadgeojson()">Download GeoJSON</button></p>
+    <p> Step 6: Have Fun!</p>
   </div>
   <script>
 
@@ -106,6 +120,7 @@
     var features = []
     var kmlsadded = 0
     var inputJson
+
 
     function resetItemJsonBuilding() {
       itemjson = '{ "type": "Feature","geometry": { "type": "LineString", "coordinates":null },"properties": { "height": "5", "ele": 78.3336,"name": "Logo right","infiniteflight": {"Facade": "Hangar 04","FacadeAssignments": null, "RoofOrientation": 52.9314728,"AnimationStates": null,"ObjectType": 0,"Path": null,"ModelRefName": null,"RoofDepth": 0.001}}}'
@@ -133,9 +148,10 @@
 
       var reader = new FileReader();
       reader.onload = function (event) {
-        
+
         //console.log('File content:', event.target.result);
         var n = event.target.result;
+        //console.log(n)
         inputJson = JSON.parse(n)
         //console.log(inputJson)
         features = inputJson.features
@@ -152,19 +168,28 @@
         return;
       }
 
-      var reader = new FileReader();
-      reader.onload = function (event) {
-        //console.log('File content:', event.target.result);
-        var n = event.target.result;
-        //console.log(n);
-        var parser, xmlDoc;
-        parser = new DOMParser();
-        xmlDoc = parser.parseFromString(n, "text/xml");
-        str = xmlDoc.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue;
-        console.log(str)
-        kml(str)
+      for (let i = 0; i < files.length; i++) {
+
+        var reader = new FileReader();
+        reader.onload = function (event) {
+          //console.log('File content:', event.target.result);
+          var n = event.target.result;
+          //console.log(n);
+          var parser, xmlDoc;
+          parser = new DOMParser();
+          xmlDoc = parser.parseFromString(n, "text/xml");
+          str = xmlDoc.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue;
+          //console.log(str)
+          kml(str)
+        }
+
+        reader.readAsText(files[i]);
+        kmlsadded = kmlsadded + 1
       }
-      reader.readAsText(files[0]);
+
+      //reader.readAsText(files[0]);
+
+      alert("KML(s) added, Total KML's added:" + kmlsadded)
     }
 
     function kmlFromBox() {
@@ -217,13 +242,12 @@
       //console.log(itemjson)
       features.push(itemjson)
       console.log(features)
-      kmlsadded = kmlsadded + 1
-      alert("KML added, total KML's added:" + kmlsadded)
+
     }
 
 
 
-    function download(filename,finaljsonout) {
+    function download(filename, finaljsonout) {
 
       var element = document.createElement('a');
 
@@ -239,7 +263,7 @@
 
     }
 
-    function downloadgeojson(){
+    function downloadgeojson() {
       var finaljsonout = inputJson
       finaljsonout.features = features
       console.log(finaljsonout)
