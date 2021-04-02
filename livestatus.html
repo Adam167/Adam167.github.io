@@ -1,0 +1,402 @@
+<html>
+
+<head>
+  <title>IF Flightplan Tools</title>
+  <link href="all.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+
+    body {
+      font-family: Helvetica, sans-serif;
+      background-color: #1A1D21;
+      color: white;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    .header {
+      overflow: hidden;
+      background-color: #002642;
+      padding: 20px 10px;
+      border-bottom: 5px solid;
+      border-bottom-color: #E59500;
+      border-radius: 20px;
+    }
+
+    .header a {
+      float: left;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      text-decoration: none;
+      font-size: 18px;
+      line-height: 25px;
+      border-radius: 4px;
+      height: 50px;
+    }
+
+    .header a.logo {
+      font-size: 35px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .header a:hover {
+      background-color: #002642;
+      border-bottom: 5px solid;
+      border-bottom-color: #E59500;
+    }
+
+    .header a.active {
+      background-color: #1A1D21;
+      color: white;
+    }
+
+    .header-right {
+      float: right;
+    }
+
+    @media screen and (max-width: 500px) {
+      .header a {
+        float: none;
+        display: block;
+        text-align: left;
+      }
+
+      .header-right {
+        float: none;
+      }
+    }
+
+    #mainTable {
+      display: inline-block;
+      border-collapse: collapse;
+      width: 95%;
+      margin: 10px;
+    }
+
+    td,
+    th {
+      border: 2px solid;
+      border-color: black;
+      padding: 8px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    #mainTable th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: center;
+      background-color: #002642;
+      color: white;
+      font-weight: 900;
+      position: sticky;
+      top: 0; 
+      border: 2px solid black;
+    }
+
+    #mainTableDiv {
+      text-align: center;
+    }
+
+    .greycell {
+      background-color: #384147;
+    }
+
+    #UserInfo {
+        width: 99%;
+        margin: auto;
+        text-align: center;
+      }
+
+      .UserInfoB {
+        display: inline-block;
+        width: 255px;
+      }
+
+      .UserInfoL {
+        display: inline-block;
+        font-size: 15px;
+        font-weight: 700;
+        width: 170px;
+        text-align: right;
+        vertical-align: top;
+      }
+
+      .UserInfoS {
+        display: inline-block;
+        width: 50px;
+        text-align: left;
+        padding-left: 3px;
+        vertical-align: top;
+      }
+
+      h3 {
+        width: 100%;
+        text-align: center;
+        padding-top: 0px;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <a href="#default" class="logo"><i class="fas fa-tools"></i> IF Flightplan Tools</a>
+    <div class="header-right">
+      <a class="active" href="index.html">Home</a>
+      <a href="editor">FPL Editor</a>
+      <a href="kml">KML to FPL</a>
+      <a href="tod-alert">Flight Status</a>
+    </div>
+  </div>
+
+  <h3><i class="fas fa-plane-departure"></i> Expert Server <i class="fas fa-plane-arrival"></i></h3>
+
+  <div id="UserInfo">
+    <div class="UserinfoB"><label class="UserInfoL"> Open frequencies:</label> <span class="UserInfoS" id="Freqs"></span>
+    </div>
+    <div class="UserinfoB"><label class="UserInfoL"> Unique Airports:</label> <span class="UserInfoS" id="Airports"></span>
+    </div>
+  </div>
+
+  <div id="mainTableDiv">
+    <table id="mainTable">
+      <tr>
+        <th>Airport</th>
+        <th>Inbound</th>
+        <th>Outbound</th>
+        <th>ATC Freqs</th>
+        <th>Controller</th>
+        <th>Open For</th>
+      </tr>
+
+    </table>
+  </div>
+
+  <script>
+
+    var apikey = '?apikey=xkqyn2avw4hfhfi68m8gkceakmkowmfx'
+    serverid = "7e5dcd44-1fb5-49cc-bc2c-a9aab1f6a856" // Expert server
+    var worldStatus = []
+    var totalOpenFreqs = 0
+
+    var ATCFreqType = [
+      { "num": 0, "name": "Ground" },
+      { "num": 1, "name": "Tower" },
+      { "num": 4, "name": "Approach" },
+      { "num": 5, "name": "Departure" },
+      { "num": 6, "name": "Centre" },
+      { "num": 7, "name": "ATIS" },
+    ]
+
+    var now = new Date().getTime();
+
+    getWorldStatus()
+
+
+    function getWorldStatus() {
+
+      fetch('https://api.infiniteflight.com/public/v2/world/status/' + serverid + apikey)
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          // Work with JSON data here
+          //console.log(data)
+
+          if (data.errorCode == 0) {
+            var result = data.result
+            processApiData(result)
+          }
+          else {
+            console.log("API returned error code:" + data.errorcode)
+          }
+        })
+
+    }
+
+    function processApiData(result) {
+      console.log(result)
+      //console.log(result.length)
+      for (i = 0; i < result.length; i++) {
+        var freqs = []
+        atcFacilities = result[i].atcFacilities
+        if (atcFacilities.length != 0) {
+          //console.log(atcFacilities)
+          for (f = 0; f < atcFacilities.length; f++) {
+            var found = false
+            for (x = 0; x < freqs.length; x++) {
+              if (freqs[x].controller == atcFacilities[f].username) {
+                var currfreqs = freqs[x].frequencies
+                freqname = freqName(atcFacilities[f].type)
+                currfreqs.push(freqname)
+                freqs[x].frequencies = currfreqs
+                found = true
+                totalOpenFreqs = totalOpenFreqs + 1
+                break;
+              }
+            }
+            if (found == false) {
+              var openTime = new Date(atcFacilities[f].startTime.replace(" ", "T"))
+              var openTimeM = howLong(openTime)
+              var newController = {
+                controller: atcFacilities[f].username,
+                frequencies: [freqName(atcFacilities[f].type)],
+                openfor: openTimeM + "m"
+              }
+              freqs.push(newController)
+              totalOpenFreqs = totalOpenFreqs + 1
+            }
+          }
+        }
+        //console.log(freqs)
+        var currAirport = {
+          icao: result[i].airportIcao,
+          inbound: result[i].inboundFlightsCount,
+          outbound: result[i].outboundFlightsCount,
+          totalFreqs: atcFacilities.length,
+          atc: freqs
+        }
+        worldStatus.push(currAirport)
+      }
+
+      document.getElementById("Freqs").innerHTML = totalOpenFreqs
+      document.getElementById("Airports").innerHTML = worldStatus.length
+      sortStatus()
+      addToTable()
+
+    }
+
+    function freqName(freqtype) {
+      var freqname = "N/A"
+      for (t = 0; t < ATCFreqType.length; t++) {
+        if (freqtype == ATCFreqType[t].num) {
+          freqname = ATCFreqType[t].name
+        }
+      }
+      return freqname
+    }
+
+    function sortStatus() {
+      worldStatus.sort(function (a, b) {
+        return a.inbound < b.inbound;
+      });
+      console.log(worldStatus)
+    }
+
+    function addToTable() {
+
+      var r = 1
+      var table = document.getElementById("mainTable");
+      for (s = 0; s < worldStatus.length; s++) {
+        var grey = false
+        if (isOdd(s) == 1) { grey = true }
+        var airportRows = worldStatus[s].totalFreqs
+        if (airportRows == 0) {
+          var row = table.insertRow(r);
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          var cell3 = row.insertCell(2);
+          var cell4 = row.insertCell(3);
+          var cell5 = row.insertCell(4);
+          var cell6 = row.insertCell(5);
+          cell1.innerHTML = worldStatus[s].icao;
+          cell2.innerHTML = worldStatus[s].inbound;
+          cell3.innerHTML = worldStatus[s].outbound;
+          cell4.innerHTML = "";
+          cell5.innerHTML = "";
+          cell6.innerHTML = "";
+          if (grey == true) {
+            cell1.className = 'greycell'
+            cell2.className = 'greycell'
+            cell3.className = 'greycell'
+            cell4.className = 'greycell'
+            cell5.className = 'greycell'
+            cell6.className = 'greycell'
+          }
+          r = r + 1
+        }
+        else {
+          var atc = worldStatus[s].atc
+          for (c = 0; c < atc.length; c++) {
+            var freqNum = atc[c].frequencies.length
+            for (f = 0; f < freqNum; f++) {
+              if (c == 0 && f == 0) { //new airport
+                var row = table.insertRow(r);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                var cell4 = row.insertCell(3);
+                var cell5 = row.insertCell(4);
+                var cell6 = row.insertCell(5);
+                cell1.innerHTML = worldStatus[s].icao;
+                cell1.rowSpan = airportRows
+                cell2.innerHTML = worldStatus[s].inbound;
+                cell2.rowSpan = airportRows
+                cell3.innerHTML = worldStatus[s].outbound;
+                cell3.rowSpan = airportRows
+                cell4.innerHTML = atc[c].frequencies[f]; 
+                cell5.innerHTML = atc[c].controller
+                cell5.rowSpan = atc[c].frequencies.length
+                cell6.innerHTML = atc[c].openfor;
+                cell6.rowSpan = atc[c].frequencies.length
+                if (grey == true) {
+                  cell1.className = 'greycell'
+                  cell2.className = 'greycell'
+                  cell3.className = 'greycell'
+                  cell4.className = 'greycell'
+                  cell5.className = 'greycell'
+                  cell6.className = 'greycell'
+                }
+                r = r + 1
+              }
+              else if (f == 0) { // new controller but not new airport
+                var row = table.insertRow(r);
+                var cell4 = row.insertCell(0);
+                var cell5 = row.insertCell(1);
+                var cell6 = row.insertCell(2);
+                cell4.innerHTML = atc[c].frequencies[f];
+                cell5.innerHTML = atc[c].controller
+                cell5.rowSpan = atc[c].frequencies.length
+                cell6.innerHTML = atc[c].openfor;
+                cell6.rowSpan = atc[c].frequencies.length
+                if (grey == true) {
+                  cell4.className = 'greycell'
+                  cell5.className = 'greycell'
+                  cell6.className = 'greycell'
+                }
+                r = r + 1
+              }
+              else { // just adding freq
+                var row = table.insertRow(r);
+                var cell4 = row.insertCell(0);
+                cell4.innerHTML = atc[c].frequencies[f];
+                if (grey == true) {
+                  cell4.className = 'greycell'
+                }
+                r = r + 1
+              }
+            }
+          }
+        }
+      }
+    }
+
+    function isOdd(num) { return num % 2; }
+
+    function howLong(openTime){
+      // Find the distance between now and the count down date
+      var openTime = now - openTime;
+      var openTime = (openTime / 60000).toFixed(0)
+      return openTime;
+    }
+
+  </script>
+</body>
+
+</html>
