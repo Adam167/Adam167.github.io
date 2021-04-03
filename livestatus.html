@@ -5,7 +5,6 @@
   <link href="all.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-
     body {
       font-family: Helvetica, sans-serif;
       background-color: #1A1D21;
@@ -72,10 +71,9 @@
     }
 
     #mainTable {
-      display: inline-block;
+      display: table;
       border-collapse: collapse;
-      width: 95%;
-      margin: 10px;
+      width:100%;
     }
 
     td,
@@ -87,6 +85,7 @@
       font-weight: 700;
     }
 
+
     #mainTable th {
       padding-top: 12px;
       padding-bottom: 12px;
@@ -95,12 +94,15 @@
       color: white;
       font-weight: 900;
       position: sticky;
-      top: 0; 
+      top: 0;
       border: 2px solid black;
     }
 
     #mainTableDiv {
       text-align: center;
+      width: 98%;
+      display: block;
+      margin: 10px;
     }
 
     .greycell {
@@ -108,38 +110,38 @@
     }
 
     #UserInfo {
-        width: 99%;
-        margin: auto;
-        text-align: center;
-      }
+      width: 99%;
+      margin: auto;
+      text-align: center;
+    }
 
-      .UserInfoB {
-        display: inline-block;
-        width: 255px;
-      }
+    .UserInfoB {
+      display: inline-block;
+      width: 255px;
+    }
 
-      .UserInfoL {
-        display: inline-block;
-        font-size: 15px;
-        font-weight: 700;
-        width: 170px;
-        text-align: right;
-        vertical-align: top;
-      }
+    .UserInfoL {
+      display: inline-block;
+      font-size: 15px;
+      font-weight: 700;
+      width: 170px;
+      text-align: right;
+      vertical-align: top;
+    }
 
-      .UserInfoS {
-        display: inline-block;
-        width: 50px;
-        text-align: left;
-        padding-left: 3px;
-        vertical-align: top;
-      }
+    .UserInfoS {
+      display: inline-block;
+      width: 50px;
+      text-align: left;
+      padding-left: 3px;
+      vertical-align: top;
+    }
 
-      h3 {
-        width: 100%;
-        text-align: center;
-        padding-top: 0px;
-      }
+    h3 {
+      width: 100%;
+      text-align: center;
+      padding-top: 0px;
+    }
   </style>
 </head>
 
@@ -158,12 +160,13 @@
   <h3><i class="fas fa-plane-departure"></i> Expert Server <i class="fas fa-plane-arrival"></i></h3>
 
   <div id="UserInfo">
-    <div class="UserinfoB"><label class="UserInfoL"> Open frequencies:</label> <span class="UserInfoS" id="Freqs"></span>
+    <div class="UserinfoB"><label class="UserInfoL"> Open frequencies:</label> <span class="UserInfoS"
+        id="Freqs"></span>
     </div>
-    <div class="UserinfoB"><label class="UserInfoL"> Unique Airports:</label> <span class="UserInfoS" id="Airports"></span>
+    <div class="UserinfoB"><label class="UserInfoL"> Unique Airports:</label> <span class="UserInfoS"
+        id="Airports"></span>
     </div>
   </div>
-
   <div id="mainTableDiv">
     <table id="mainTable">
       <tr>
@@ -174,10 +177,8 @@
         <th>Controller</th>
         <th>Open For</th>
       </tr>
-
     </table>
   </div>
-
   <script>
 
     var apikey = '?apikey=xkqyn2avw4hfhfi68m8gkceakmkowmfx'
@@ -284,7 +285,7 @@
 
     function sortStatus() {
       worldStatus.sort(function (a, b) {
-        return a.inbound < b.inbound;
+        return a.inbound > b.inbound ? -1 : 1;
       });
       console.log(worldStatus)
     }
@@ -340,7 +341,7 @@
                 cell2.rowSpan = airportRows
                 cell3.innerHTML = worldStatus[s].outbound;
                 cell3.rowSpan = airportRows
-                cell4.innerHTML = atc[c].frequencies[f]; 
+                cell4.innerHTML = atc[c].frequencies[f];
                 cell5.innerHTML = atc[c].controller
                 cell5.rowSpan = atc[c].frequencies.length
                 cell6.innerHTML = atc[c].openfor;
@@ -389,7 +390,7 @@
 
     function isOdd(num) { return num % 2; }
 
-    function howLong(openTime){
+    function howLong(openTime) {
       // Find the distance between now and the count down date
       var openTime = now - openTime;
       var openTime = (openTime / 60000).toFixed(0)
