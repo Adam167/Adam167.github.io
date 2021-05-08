@@ -81,9 +81,10 @@
     <a href="#default" class="logo">IF Flightplan Tools</a>
     <div class="header-right">
       <a href="index.html">Home</a>
-      <a href="editor">FPL Editor</a>
-      <a class="active" href="kml">KML to FPL</a>
-      <a href="tod-alert">Flight Status</a>
+      <a href="editor.html">FPL Editor</a>
+      <a href="kml.html">KML to FPL</a>
+      <a href="tod-alert.html">Flight Status</a>
+      <a href="livestatus.html">Expert Status</a>
     </div>
   </div>
 
@@ -102,6 +103,8 @@
     </p>
     <p>Step 3: Configure your options, tick what you want added.</p>
     <label for="name">Building name:</label><input type="text" id="name" value="KML Building">
+    <input type="checkbox" id="filenameCheck" name="filenameCheck">
+    <label for="filenameCheck"> Use KML Filename for building name</label><br>
     <label for="height">Building height:</label><input type="text" id="height" value="10">
     <label for="ele">Elevation (meters):</label><input type="number" id="ele" value=78.3336>
     <p> Step 4: Upload your KML file or multiple KML files below</p>
@@ -180,9 +183,13 @@
           xmlDoc = parser.parseFromString(n, "text/xml");
           str = xmlDoc.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue;
           //console.log(str)
-          kml(str)
+          var filename = files[i].name
+          var namesplit = filename.split(".")
+          filename = namesplit[0]
+          //console.log(filename)
+          kml(str,filename)
         }
-
+        
         reader.readAsText(files[i]);
         kmlsadded = kmlsadded + 1
       }
@@ -198,18 +205,25 @@
     }
 
 
-    function kml() {
+    function kml(str,filename) {
       resetItemJsonBuilding()
       var height = document.getElementById("height").value;
       var ele = document.getElementById("ele").value;
-      var name = document.getElementById("name").value;
+
+      if(document.getElementById("filenameCheck").checked){
+        var name = filename
+      }
+      else{
+        var name = document.getElementById("name").value;
+      }
+
+
       //console.log(str)
       var str_array = str.split(" ");
       var output = ""
 
       for (var i = 0; i < str_array.length; i++) {
         waypoint = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-        //alert(waypoint);
 
         var lat
         var lon
@@ -241,7 +255,7 @@
       itemjson.properties.name = String(name)
       //console.log(itemjson)
       features.push(itemjson)
-      console.log(features)
+      //console.log(features)
 
     }
 
