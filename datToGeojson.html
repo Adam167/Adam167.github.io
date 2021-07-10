@@ -81,9 +81,10 @@
     <a href="#default" class="logo">IF Flightplan Tools</a>
     <div class="header-right">
       <a href="index.html">Home</a>
-      <a href="editor">FPL Editor</a>
-      <a class="active" href="kml">KML to FPL</a>
-      <a href="tod-alert">Flight Status</a>
+      <a href="editor.html">FPL Editor</a>
+      <a class="active" href="kml.html">KML to FPL</a>
+      <a href="tod-alert.html">Flight Status</a>
+      <a href="livestatus.html">Expert Status</a>
     </div>
   </div>
 
@@ -275,7 +276,7 @@
             // LHR - atc_tower_heathrow
             // small 14m | 27 | medium 39m | 59.5 | LHR 80m
             if (document.getElementById("beacon").checked == true) {
-              var output = "[" + Number(row_array[2]) + "," + Number(row_array[3]) + "]"
+              var output = "[" + Number(row_array[3]) + "," + Number(row_array[2]) + "]"
               var towerheight = (row_array[5] / 3.28084).toFixed(1)
               //console.log(towerheight)
               if (towerheight < 20) {
@@ -305,7 +306,7 @@
         if (row_array[0] == "18") { //beacon
           if (document.getElementById("beacon").checked == true) {
             resetItemJsonBeacon()
-            var output = "[" + Number(row_array[2]) + "," + Number(row_array[3]) + "]"
+            var output = "[" + Number(row_array[3]) + "," + Number(row_array[2]) + "]"
             var jsonout = JSON.parse(output)
             itemjson.geometry.coordinates = jsonout
             itemjson.properties.ele = Number(ele)
@@ -319,7 +320,7 @@
           if (document.getElementById("windsocks").checked == true) {
             resetItemJsonWindsock()
             //var ele = document.getElementById("ele").value;
-            var output = "[" + Number(row_array[2]) + "," + Number(row_array[3]) + "]"
+            var output = "[" + Number(row_array[3]) + "," + Number(row_array[2]) + "]"
             var jsonout = JSON.parse(output)
             itemjson.geometry.coordinates = jsonout
             itemjson.properties.ele = Number(ele)
